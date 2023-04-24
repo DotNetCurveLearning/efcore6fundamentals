@@ -466,3 +466,51 @@ In the PMC, run the following command first:
 ```
 update-database -verbose
 ```
+
+## Seeding a database via migrations
+
+Seed data is specified in the modelBuilder with a method called **HasData**.
+
+```
+modelBuilder.Entity<EntityType>().HasData(parameters);
+modelBuilder.Entit<Author>().HasData(new Author { ...});
+```
+
+**Provides all parameters including keys and foreign keys**. 
+**HasData will get interpreted into migrations**.
+**Inserts will get interpreted into SQL**.
+**Data will get inserted when migrations are executed.**
+
+```
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Author>()
+        .HasData(new Author { Id = 1, FirstName = "Rhoda", LastName = "Lerman" });
+
+    var authorList = new Author[]
+    {
+        new Author { Id = 2, FirstName = "Ruth", LastName = "Ozeki" },
+        new Author { Id = 3, FirstName = "Sofia", LastName = "Segovia" },
+        new Author { Id = 4, FirstName = "Ursula K.", LastName = "LeGuin" },
+        new Author { Id = 5, FirstName = "Hugh", LastName = "Howey" },
+        new Author { Id = 6, FirstName = "Isabelle", LastName = "Allende" }
+    };
+
+    modelBuilder.Entity<Author>()
+        .HasData(authorList);
+}
+```
+
+Then, we create a new migration (**add-migration seedauthors**, for instance), fill in the business logic for the both overriden
+methods, **Up** and **Down**, and finally from PMC, we run the command **update-database**.
+
+**Seeding with HasData will not cover all use cases for seeding**.
+
+### Use cases for seeding with HasData
+
+* Mostly static seed data.
+* Sole means of seeding.
+* No dependency on anything else in the database.
+* Provide test data with a consistent starting point.
+
+**HasData will also be recognized and applied by EnsureCreated**.
