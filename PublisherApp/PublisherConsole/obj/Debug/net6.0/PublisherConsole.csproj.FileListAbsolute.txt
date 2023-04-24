@@ -75,3 +75,8 @@ C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\Publish
 C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\obj\Debug\net6.0\PublisherConsole.pdb
 C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\obj\Debug\net6.0\PublisherConsole.genruntimeconfig.cache
 C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\obj\Debug\net6.0\ref\PublisherConsole.dll
+C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\bin\Debug\net6.0\Humanizer.dll
+C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\bin\Debug\net6.0\Mono.TextTemplating.dll
+C:\Users\ernestoantonio.rodri\Courses\Csharp10Course\EFCore6Fundamentals\PublisherApp\PublisherConsole\bin\Debug\net6.0\System.CodeDom.dll

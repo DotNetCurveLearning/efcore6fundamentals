@@ -336,3 +336,133 @@ The Remove and Update methods also have a range cunterpart.
 The range methods can be used directly in the DbContext.
 
 EF Core supports bulk operations.
+
+# Chapter 06 - Controlling database creation and schema with migrations
+
+## Understanding EF Core migrations
+
+EF Core needs to comprehend:
+
+* How to build queries that work with our db schema (build SQL from our LINQ queries) 
+* How do we shape data that's returned from the db (materialize query results into objects)
+* How to get that data into the database (build SQL to save data into database)
+
+**Mapping knowledge can also be used to evolve the database schema**.
+
+**EF Core basic migrations workflow**
+
+Define/change model --> Create a migration file --> Apply migration to DB or script
+
+## The design-time migration tools
+
+**Creating and executing migrations happens at design time**.
+
+The NuGet package used for this is **Microsoft.Entity.FrameworkCore.Tools**.
+
+Migration commands led to Migration APIs. There are:
+
+* Powershell migrations commands (**add-migration**)
+* dotnet CLI migrations commands (**dotnet ef migrations add**)
+
+If we're going to work with the command line we need to install the EF Core command line tool on our system:
+
+```
+dotnet tool install dotnet-ef
+```
+
+We also need the **Microsoft.EntityFrameworkCore.Design** NuGet package.
+
+**Visual Studio (Windows)**
+
+* Add tools package to project
+	- Design comes for "free"
+
+**Command line**
+
+* Install the tools on your system
+* Design package in your project
+
+## Using migrations in Visual Studio when EF Core is in a Class library project
+
+* Install **Microsoft.Entity.FrameworkCore.Tools** NuGet package into executable project (e.g., console)
+* Ensure the executable project is the startup project
+* Set Package Manager Console (PMC) "default project" to class library with EF Core (e.g., data)
+* Run EF Core migration PoerShell commands in PMC
+
+To make sure that we've got it all set up correctly, using the PMC, type the following command:
+
+```
+get-help entityframework
+```
+
+## Adding a first migration
+
+This is done using the **add-migration** command.
+
+It will look at the DbContext and determine the data model. Using that knowledge, it will create a new migration file describing
+how to construct the database schema to match the model.
+
+```
+Add-Migration [-Name] <String> [-OutputDir <String>] [-Context <String>] [-Project <String>] [-StartupProject <String>] [-Namespace <String>] [-Args 
+<String>] [<CommonParameters>]
+```
+
+For instance:
+
+```
+add-migration initial 
+```
+
+## Inspecting the first migration
+
+It will be created a **Migrations** folder containing a new migration file called **initial** along with a timestamp. There's 
+another file in there (in our example, called PubContextModelSnapshot) and that's where EF Core migrations keeps track of the
+current state of the model.
+
+This snapshot file is really important because the next time we add a migration, EF Core will start by reading the DbContext to
+determine the current state of the data model. Then it will the snapshot of the previous state of the data model and compare it
+to the new version of the model, and that's how it figures out what needs to be changed in the schema and is able to create a new
+set of migrations to get caught up, and it updates the snapshot file.
+
+## Using migrations to script or directly create the database
+
+We can also generate an script throught the migrations, an importantt feature for working with a production database or sharing
+our development database changes with our team.
+
+### Applying migrations directly to the database
+
+The PowerShell command to update the database directly is **update-database**. In response, EF Core:
+
+* Reads migration file
+* Generates SQL in memory
+* Creates the database if needed
+* Runs SQL on the database
+
+### Applying migrations into a SQL script
+
+If we're only creating an script, we'll use the **script-migration++ PowerShell command or dotnet ef migrations script in the CLI.
+In this case, EF Core:
+
+* Reads migration file
+* Generates SQL
+* Default: displays SQL in editor
+* Use parameters to target file name, etc.
+
+**Migrations recommendation**
+
+* Development database --> **update-database**
+* Production database  --> **script-migration** 
+
+**What if the database doesn't exist?
+
+**update-database**
+API's internal code will create the database before executing migration code.
+
+**script-migration**
+If we've created a script and we runinng it, we must create the database before running the script.
+
+In the PMC, run the following command first:
+
+```
+update-database -verbose
+```
