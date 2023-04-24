@@ -514,3 +514,32 @@ methods, **Up** and **Down**, and finally from PMC, we run the command **update-
 * Provide test data with a consistent starting point.
 
 **HasData will also be recognized and applied by EnsureCreated**.
+
+## Scripting multiple migrations
+
+**update-database** know to only apply the latest migration and its logic is to check history table in the database.
+
+Scripting migrations requires more control, so it works differently than **update-database**. Scripts won't check the database.
+
+If we go to use scripting migration, we have to keep in mind what scenarios that make sense for us. 
+
+### Some scripting options
+
+```
+script-migration
+```
+Default: scripts every migration. For example, testing where we might be starting with a fresh database each time.
+
+```
+script-migration -idempotent (the smartest option)
+```
+Scripts all migrations but check for each object first e.g., table already exists.
+
+The script-migration has two parameters:
+
+**FROM**: specifies the last migration run, so start at the next one.
+**TO**: final one to apply.
+
+```
+script-migration FROM  TO
+```
