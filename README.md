@@ -105,7 +105,7 @@ select a)
 .ToList()
 ```
 
-## Filtering queries securely by defaault
+## Filtering queries securely by default
 
 Parameterized queries protect your database from SQL injection attacks.
 
@@ -220,4 +220,119 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
 **All queries for this DbContext will default to not tracking**.
 
+# Chapter 04 - Tracking and saving data with EF Core
 
+## Gaining a better understanding of DbContext and Entity
+
+The **DbContext** is a representation of a session with the database, and that session begins not when the context is instantiated,
+but the first time we ask the context to do something with the database: execute query or save some data.
+
+Its **ChangeTracker** is a critical piece of that. It manages a collection of **EntityEntry** objects. The ChangeTracker creates
+them and maintains their values.
+
+The **EntityEntry** state info for each entity: CurrentValues, OriginalValues, State enum, Entity & more.
+
+The **Entity** within the context of EF Core, have a particular meaning. It's an in-memory object with key (identity) properties
+that the DbContext is aware of.
+
+## Tracking and saving workflow
+
+EF Core creates tracking objects for each entity:
+
+The tracking states are:
+* Unchanged (default)
+* Added
+* Modified
+* Deleted
+
+When we call the **SaveChanges** method from DbContext, it will updates the state for each entity, and works with provider to 
+compose SQL statements, and then, executes statements on database.
+
+## Inserting simple objects
+
+The objects can be added from DbSet or DbContext.
+
+**Track via DbSet**
+
+```
+context.Authors.Add(...)
+```
+
+DbSet knows the type. DbContext knows that it's Added.
+
+**Track via DbContext**
+
+```
+context.Add(...)
+```
+
+DbContext will discover type. Knows it's Added.
+
+## Updating simple objects
+
+```
+void RetrieveAndUpdateAuthor()
+{
+    var author = _context.Authors.
+        FirstOrDefault(author => author.FirstName.Equals("Julie") && author.LastName.Equals("Lerman"));
+
+    if (author != null )
+    {
+        author.FirstName = "Julia";
+        _context.SaveChanges();
+    }
+}
+```
+
+How DbContext discover about changes?
+
+That's done by **DbContext.ChangeTracker.DetectChanges**. It reads each object being tracked and updates state details in 
+EntityEntry object.
+
+DbContext.SaveChanges() always calls DetectChanges for you.
+
+**The entities are just plain objects and don't communicate their changes to the DbContext**.
+
+## Updating untracked objects
+
+Most commonly, this will happen in a disconnected application, like a web app.
+
+If we get an instance of the DbContext through the keyword **using**, the DbContext will get disposed at the end of the method that
+instantiated it.
+
+So, if the context not longer exists, there is nothing tracking that entity.
+
+In those cases, since the entity is untracked, we need to use the **Update()** method from DbContext, because it does two things:
+first, it causes the context to begin tracking the entity, and at the same time, it instructs the context to set the state for
+that object to **Modified** for all the entity's properties.
+
+It's theh only way to be sure that we're getting all of our changes to the database.
+
+## Deleting simple objects
+
+```
+void DeleteAnAuthor()
+{
+    var extraJL = _context.Authors.Find(1);
+
+    if (extraJL != null)
+    {
+        _context.Authors.Remove(extraJL);
+        _context.SaveChanges();
+    }
+}
+```
+
+## Tracking mulitple objects and bulk support
+
+We can take advantage of the **AddRange()** method:
+
+```
+_context.Authors.AddRange(author1,..., authorn)
+```
+
+The Remove and Update methods also have a range cunterpart.
+
+The range methods can be used directly in the DbContext.
+
+EF Core supports bulk operations.
