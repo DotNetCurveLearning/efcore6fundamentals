@@ -514,3 +514,80 @@ methods, **Up** and **Down**, and finally from PMC, we run the command **update-
 * Provide test data with a consistent starting point.
 
 **HasData will also be recognized and applied by EnsureCreated**.
+
+## Scripting multiple migrations
+
+**update-database** know to only apply the latest migration and its logic is to check history table in the database.
+
+Scripting migrations requires more control, so it works differently than **update-database**. Scripts won't check the database.
+
+If we go to use scripting migration, we have to keep in mind what scenarios that make sense for us. 
+
+### Some scripting options
+
+```
+script-migration
+```
+Default: scripts every migration. For example, testing where we might be starting with a fresh database each time.
+
+```
+script-migration -idempotent (the smartest option)
+```
+Scripts all migrations but check for each object first e.g., table already exists.
+
+The script-migration has two parameters:
+
+**FROM**: specifies the last migration run, so start at the next one.
+**TO**: final one to apply.
+
+```
+script-migration FROM  TO
+```
+
+## Reverse engineering an existing database
+
+W've seen the use of migrations to create a database from a DbContext and classes. It's also possible to reverse engineer an existing database into a DbContext and classes.
+
+### Scaffolding builds DbContext and Entity Classes
+
+This s a one-time procedure to get us a head start with our code if we're working with an existing database.
+
+**Scaffolding limitations**
+
+* Updating model when database changes is not currently supported with EF Core 6.
+
+* It's not easy to begin by reverse engineering an existing database and then migrate the database with model changes.
+
+**Reverse Engineer with the Scaffold Command**
+
+The Powershell command to use for this task is **Scaffold-DbContext**. If we're using the EF CLI, it's **dotnet ef dbcontext scaffold**.
+
+Connection and provider parameters are required!!
+
+Run the following command in the PMC:
+
+```
+Scaffold-DbContext 'Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = PubDatabase;' Microsoft.EntityFrameworkcore.SqlServer
+```
+
+By default, scaffolding prepares our code for "lazy loading" related data.
+
+How EF Core determines mappings to DB?
+
+It has defaults that it follows when it's reading our classes in the DbContext, in order to determine what the database schema looks like. These are referred as **conventions**.
+
+When those conventions don't align with our real intent, in the context file we have the ability to weak how EF Core will interpret the model, and we do that using the **Fluent API**.
+
+Ex.:
+```
+modelBuilder.Entity<Book>()
+    .Property(b => b.Title)
+    .HasColumnName("MainTitle");
+```
+
+Another path for overriding conventions is using **data annotations**:
+
+```
+[Column("MainTitle)]
+public string Title { get; set; }
+```

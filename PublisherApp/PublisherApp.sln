@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherDomain", "Publishe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherConsole", "PublisherConsole\PublisherConsole.csproj", "{808FAB6D-C534-4A7C-8054-20E32E2D381C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublisherData", "PublisherData\PublisherData.csproj", "{23613289-2122-4BD3-9967-21ACFE7E9927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherData", "PublisherData\PublisherData.csproj", "{23613289-2122-4BD3-9967-21ACFE7E9927}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
