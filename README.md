@@ -615,3 +615,42 @@ public class Book
     public int Id { get; set; }
 }
 ```
+
+## Beneffiting from foreign-key property
+
+In our example, without a foreign key for Author in the Book model, the only way we can add a new book to an author is through the Author object.
+
+```
+public class Book
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public Author Author { get; set; }
+}
+
+...
+
+author.Books.Add(abook)
+abook.Author = someauthor
+```
+
+This means that I always have to have that author in memory in order to add a new book into the system.
+
+However, with a foreign key property available, we don't need an Author object.
+
+```
+public class Book
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public int AuthorId { get; set; }
+}
+
+...
+
+book.AuthorId = 1
+```
+
+**Foreign key properties & HasData seeding**
+
+HasData requires explicit primary and foreign key values to be set. With AuthorId now in Book, we can seed book data as well.

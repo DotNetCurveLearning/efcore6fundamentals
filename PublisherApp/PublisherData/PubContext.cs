@@ -23,19 +23,29 @@ namespace PublisherData
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Author>()
-                .HasData(new Author { Id = 1, FirstName = "Rhoda", LastName = "Lerman" });
+                .HasData(new Author { AuthorId = 1, FirstName = "Rhoda", LastName = "Lerman" });
 
             var authorList = new Author[]
             {
-                new Author { Id = 2, FirstName = "Ruth", LastName = "Ozeki" },
-                new Author { Id = 3, FirstName = "Sofia", LastName = "Segovia" },
-                new Author { Id = 4, FirstName = "Ursula K.", LastName = "LeGuin" },
-                new Author { Id = 5, FirstName = "Hugh", LastName = "Howey" },
-                new Author { Id = 6, FirstName = "Isabelle", LastName = "Allende" }
+                new Author { AuthorId = 2, FirstName = "Ruth", LastName = "Ozeki" },
+                new Author { AuthorId = 3, FirstName = "Sofia", LastName = "Segovia" },
+                new Author { AuthorId = 4, FirstName = "Ursula K.", LastName = "LeGuin" },
+                new Author { AuthorId = 5, FirstName = "Hugh", LastName = "Howey" },
+                new Author { AuthorId = 6, FirstName = "Isabelle", LastName = "Allende" }
             };
 
             modelBuilder.Entity<Author>()
                 .HasData(authorList);
+
+            var someBooks = new Book[]
+            {
+                new Book { BookId = 1, AuthorId = 1, Title = "In God's Ear" },
+                new Book { BookId = 2, AuthorId = 2, Title = "A tale for the time being" },
+                new Book { BookId = 3, AuthorId = 3, Title = "The left hand of darkness" }
+            };
+
+            modelBuilder.Entity<Book>()
+                .HasData(someBooks);
         }
     }
 }
