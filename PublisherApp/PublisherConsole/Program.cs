@@ -4,37 +4,18 @@ using PublisherData.Extensions;
 using PublisherDomain;
 
 // Not needed anymore since the db is created already
-/*using (PubContext context = new PubContext())
+using (PubContext _context = new PubContext())
 {
     // The EnsureCreated method cause EF core read the provider 
     // and connection string defined in the PubContext class and
     // then go look to see if the db exists. If not, it will be created.
-    context.Database.EnsureCreated();
-}*/
+    _context.Database.EnsureCreated();
+}
 
 // this assumes we're working with the populated database already created
-PubContext _context = new PubContext();
+//PubContext _context = new PubContext();
 
-//GetAuthors();
-//AddAuthor();
-//AddAuthorWithBooks();
-//GetAuthorsWithBooks();
-//QueryingFiltersWithParameters("Josie");
-// QueryingFiltersWithParametersAndLike("L");
-//AddSomeMoreAuthors();
-//SkipAndTakeAuthors();
-//FindAuthorByKey(8);
-//SortAuthors();
-//QueryAggregate("Lerman");
-//InsertAuthor();
-//RetrieveAndUpdateAuthor();
-//RetrieveAndUpdateMultipleAuthors();
-//VariousOperations();
-//CoordinatedRetrieveAndUpdateAuthor();
-//DeleteAnAuthor();
-//InsertMultipleAuthors();
-BulkAddUpdate();
-
+/*
 void DeleteAnAuthor()
 {
     var extraJL = _context.Authors.Find(1);
@@ -141,7 +122,7 @@ void BulkAddUpdate()
 
     var book = _context.Books.Find(2);
     book.Title = "Programming Entity Framework 2nd Edition";
-    
+
     _context.SaveChanges();
 }
 
@@ -249,11 +230,6 @@ void SkipAndTakeAuthors()
 
 void SortAuthors()
 {
-    //var authorsByLastName = _context.Authors
-    //    .OrderBy(author => author.LastName)
-    //    .ThenBy(author => author.FirstName)
-    //    .ToList();
-
     var authorsByLastName = _context.Authors
         .OrderByDescending(author => author.LastName)
         .ThenByDescending(author => author.FirstName)
@@ -279,3 +255,4 @@ static void DisplayAuthorData(Author? author)
 {
     Console.WriteLine($"{author?.LastName} {author?.FirstName}");
 }
+*/

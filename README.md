@@ -591,3 +591,27 @@ Another path for overriding conventions is using **data annotations**:
 [Column("MainTitle)]
 public string Title { get; set; }
 ```
+
+# Chapter 06 - Defining one-to-many relationships
+
+## Visualizing EF Core's interpretation of our data model
+
+Install the **EF Core Power Tools** VS extension.
+
+## One-to-many relationships
+
+Reference from parent to child is sufficient. The child has no references back to parent and a foreign key will be inferred in the database.
+
+```
+public class Author
+{
+    ...
+    public List<Book> Books { get; set; }
+}
+
+public class Book
+{
+    ...
+    public int Id { get; set; }
+}
+```
