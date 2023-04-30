@@ -703,3 +703,37 @@ modelBuilder.Entity<Author>()
         .HasForeignKey(b => b.AuthorID)
         .IsRequired(false);
 ```
+
+# CHAPTER 07 - Logging EF Core activity and SQL 
+
+## Adding logging to EF Core's workflow
+
+EF Core's logging is an extension of .NET Logging APIs. 
+
+**EF Core captures**:
+
+* SQL
+* ChangeTracker activity
+* Interaction with database
+* Database transactions
+
+**EF Core specific configurations**:
+
+- EnableDetailedErrors, EnableSensitiveData
+- Filter based on message type (e.g., Database messages)
+- Even more detailed filtering (see docs)
+
+We can configure it using the DbContextOptionsBuilder.**LogTo** method:
+
+```
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    ...
+
+    optionsBuilder
+        .UseSqlServer(configuration.GetConnectionString(CONNECTION_STRING))
+        .LogTo(Console.WriteLine);
+}
+```
+
+There's no default target for where the logs should be sent so, we always have to provide a target as a parameter.

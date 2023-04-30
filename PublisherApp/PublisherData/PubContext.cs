@@ -17,7 +17,9 @@ public class PubContext : DbContext
 
         var configuration = builder.Build();
 
-        optionsBuilder.UseSqlServer(configuration.GetConnectionString(CONNECTION_STRING));
+        optionsBuilder
+            .UseSqlServer(configuration.GetConnectionString(CONNECTION_STRING))
+            .LogTo(Console.WriteLine);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
