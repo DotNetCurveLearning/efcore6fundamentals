@@ -4,16 +4,16 @@ using PublisherData.Extensions;
 using PublisherDomain;
 
 // Not needed anymore since the db is created already
-using (PubContext _context = new PubContext())
-{
-    // The EnsureCreated method cause EF core read the provider 
-    // and connection string defined in the PubContext class and
-    // then go look to see if the db exists. If not, it will be created.
-    _context.Database.EnsureCreated();
-}
+//using (PubContext _context = new PubContext())
+//{
+//    // The EnsureCreated method cause EF core read the provider 
+//    // and connection string defined in the PubContext class and
+//    // then go look to see if the db exists. If not, it will be created.
+//    _context.Database.EnsureCreated();
+//}
 
 // this assumes we're working with the populated database already created
-//PubContext _context = new PubContext();
+PubContext _context = new PubContext();
 
 /*
 void DeleteAnAuthor()

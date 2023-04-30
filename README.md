@@ -674,3 +674,32 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
         .HasForeignKey(b => b.AuthorFK);
 }
 ```
+
+## Understanding nullability and required vs. optional principals
+
+This is important regarding the one-to-many relationships. That is, requiring that every dependent has a principal or allowing
+that to be an optional relationship.
+
+**By default, every dependent must have a principal, but EF Core does not enforce this**.
+
+In our case, that means that every Book must have an Author.
+
+**Allowing optional parent**
+
+```
+public class Book
+{
+    ...
+    public int? AuthorId { get; set; }
+}
+```
+
+We can also use a mapping to specify that the Author isnt' required:
+
+```
+modelBuilder.Entity<Author>()
+        .HasMany(a => a.Books)
+        .WithOne(b => b.Author)
+        .HasForeignKey(b => b.AuthorID)
+        .IsRequired(false);
+```
