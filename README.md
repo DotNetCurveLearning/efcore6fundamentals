@@ -654,3 +654,23 @@ book.AuthorId = 1
 **Foreign key properties & HasData seeding**
 
 HasData requires explicit primary and foreign key values to be set. With AuthorId now in Book, we can seed book data as well.
+
+## Mapping unconventional foreign-keys
+
+**EF Core should not drive how we design our business logic**.
+
+### Configuring a non-conventional foreign key
+
+FK is tied to a relationship, so we must first describe that relationship.
+
+**PubContext.cs**
+
+```
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Author>()
+        .HasMany(a => a.Books)
+        .WithOne(b => b.Author)
+        .HasForeignKey(b => b.AuthorFK);
+}
+```
