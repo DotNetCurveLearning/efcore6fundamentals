@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PublisherConsole.aop;
+using PublisherConsole.Aspects;
 using PublisherConsole.Interfaces;
 using PublisherData;
 using PublisherData.Extensions;
 using PublisherDomain;
+using Serilog;
 
 namespace PublisherConsole;
 
-// [DebugAspect]
+[CustomLog]
 public class EFCoreDemo : IDataDisplayer
 {
     private readonly PubContext _dbContext;

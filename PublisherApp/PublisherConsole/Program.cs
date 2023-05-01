@@ -4,18 +4,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PublisherConsole;
+using PublisherConsole.Aspects;
 using PublisherConsole.Implementations;
 using PublisherConsole.Interfaces;
 using PublisherData;
-using System.Threading.Channels;
 
 static void ConfigureServices(IServiceCollection services)
 {
     // configure logging
     //services.AddLogging(builder =>
     //{
-    //    builder.AddConsole();     
-    //    builder.SetMinimumLevel(LogLevel.Error);
+    //    builder.AddConsole();
+    //    builder.SetMinimumLevel(LogLevel.Information);
     //});
 
     services.AddOptions();
@@ -36,6 +36,7 @@ static void ConfigureServices(IServiceCollection services)
     ServiceLifetime.Singleton);
 
     services.AddTransient<EFCoreDemo>();
+    services.AddTransient<CustomLogAttribute>();
     services.AddTransient<IDataDisplayer, DataDisplayer>();
 }
 
