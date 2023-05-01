@@ -737,3 +737,19 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 ```
 
 There's no default target for where the logs should be sent so, we always have to provide a target as a parameter.
+
+## Filtering log output with LogLevel and Command Type
+
+The unfiltered logs can help us learn what filters can help in different situations.
+
+When configuring the DbContext in the IoC container:
+
+```
+services.AddDbContext<PubContext>(options =>
+    {        
+        options
+        .UseSqlServer(configuration.GetRequiredSection("ConnectionStrings").GetSection("PubDatabase").Value)
+        .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name}, LogLevel.Information);        
+    },
+    ServiceLifetime.Singleton);
+```

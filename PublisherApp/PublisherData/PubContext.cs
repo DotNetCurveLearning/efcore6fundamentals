@@ -7,19 +7,14 @@ namespace PublisherData;
 public class PubContext : DbContext
 {
     private const string CONNECTION_STRING = "PubDatabase";
+    private readonly IConfiguration _configuration;
+
     public DbSet<Author> Authors { get; set; }
     public DbSet<Book> Books { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public PubContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
     {
-        var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        var configuration = builder.Build();
-
-        optionsBuilder
-            .UseSqlServer(configuration.GetConnectionString(CONNECTION_STRING))
-            .LogTo(Console.WriteLine);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
