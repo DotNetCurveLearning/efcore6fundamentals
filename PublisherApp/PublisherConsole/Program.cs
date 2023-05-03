@@ -31,7 +31,8 @@ static void ConfigureServices(IServiceCollection services)
     {        
         options
         .UseSqlServer(configuration.GetRequiredSection("ConnectionStrings").GetSection("PubDatabase").Value)
-        .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name}, LogLevel.Information);        
+        .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name}, LogLevel.Information)
+        .EnableSensitiveDataLogging();        
     },
     ServiceLifetime.Singleton);
 
@@ -52,4 +53,8 @@ var efCoreDemo = serviceProvider.GetService<EFCoreDemo>();
 //efCoreDemo?.DisplayData(efCoreDemo?.FindThatAuthor(1));
 //efCoreDemo.SortAuthors();
 //efCoreDemo?.SkipAndTakeAuthors();
-efCoreDemo?.GetAuthorsWithBooks();
+// efCoreDemo?.GetAuthorsWithBooks();
+//efCoreDemo.InsertNewAuthorWithNewBook();
+//efCoreDemo.InsertNewAuthorWith2Book();
+//efCoreDemo.AddNewBookToExistingAuthorInMemory();
+efCoreDemo.AddNewBookToExistingAuthorInMemoryViaBook();

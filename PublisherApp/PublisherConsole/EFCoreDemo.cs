@@ -256,4 +256,61 @@ public class EFCoreDemo : IDataDisplayer
         var author = _dbContext.Authors.Find(entityKey);
         DisplayData(author);
     }
+
+    public void InsertNewAuthorWithNewBook()
+    {
+        var author = new Author { FirstName = "Lynda", LastName = "Rutledge" };
+        author.Books.Add(new Book
+        {
+            Title = "West With Giraffes",
+            PublishDate = new DateTime(2021, 2, 1)
+        });
+
+        _dbContext.Authors.Add(author);
+        _dbContext.SaveChanges();
+    }
+
+    public void InsertNewAuthorWith2Book()
+    {
+        var author = new Author { FirstName = "Don", LastName = "Jones" };
+        author.Books.AddRange(new List<Book>
+        {
+            new Book { Title = "The Never", PublishDate = new DateTime(2019, 12, 1) },
+            new Book { Title = "Alabaster", PublishDate = new DateTime(2019, 4, 1) },
+        });
+
+        _dbContext.Authors.Add(author);
+        _dbContext.SaveChanges();
+    }
+
+    public void AddNewBookToExistingAuthorInMemory()
+    {
+        var author = _dbContext.Authors.FirstOrDefault(a => a.LastName == "Howey");
+
+        if (author is not null)
+        {
+            author.Books.Add(new Book
+            {
+                Title = "Wool",
+                PublishDate = new DateTime(2021, 1, 1)
+            });
+        }
+
+        _dbContext.SaveChanges();
+    }
+
+    public void AddNewBookToExistingAuthorInMemoryViaBook()
+    {
+        var book = new Book 
+        { 
+            Title = "Shift", 
+            PublishDate = new DateTime(2012, 1, 1),
+            AuthorId = 5,
+        };
+        
+        //book.Author = _dbContext.Authors.Find(5);
+
+        _dbContext.Books.Add(book);
+        _dbContext.SaveChanges();
+    }
 }

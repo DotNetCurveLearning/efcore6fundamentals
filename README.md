@@ -753,3 +753,30 @@ services.AddDbContext<PubContext>(options =>
     },
     ServiceLifetime.Singleton);
 ```
+
+# CHAPTER 08 - Interacting with related data
+
+## Adding related data
+
+Any object can be the head of a graph. For instance: 
+
+**Author Graph** 
+An author with some books in memory.
+
+**Book Graph** 
+An book with an author and its book jacket in memory.
+
+**Change Tracker response to new child of existing parent**.
+
+- Add child to child collection of existing tracked parent ==> **SaveChanges**
+    * When **SaveChanges** calls **DetectChanges**, the context will see that the book was added to the author.
+
+**DANGEROUS!!**:
+
+Beware accidental inserts! Passing a pre-existing entity into its DbSet.Add, will cause EF Core to try to insert it into the database!
+
+- Add existing tracked parent to ref property of child ==> **SaveChanges**
+    * EF Core forced author state to Added when I added via Authors DbSet, but not when adding from Books
+
+- Set goreign key property in child class to parent's key value ==> **Add & SaveChanges** (The favorite one)
+    * If I already know the key value of the author, but the object is not yet in-memory, we can just set the AuthorId property of the new book to that key value that we already know.
