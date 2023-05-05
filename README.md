@@ -778,5 +778,84 @@ Beware accidental inserts! Passing a pre-existing entity into its DbSet.Add, wil
 - Add existing tracked parent to ref property of child ==> **SaveChanges**
     * EF Core forced author state to Added when I added via Authors DbSet, but not when adding from Books
 
-- Set goreign key property in child class to parent's key value ==> **Add & SaveChanges** (The favorite one)
+- Set foreign key property in child class to parent's key value ==> **Add & SaveChanges** (The favorite one)
     * If I already know the key value of the author, but the object is not yet in-memory, we can just set the AuthorId property of the new book to that key value that we already know.
+
+## Eager loading related data in queries
+
+### Eager loading
+
+Include related objects in query. It allow us to use the DbSet.Include() method to retrieve data and its related data in the same query.
+By default, the entire collection is retrieved.
+
+**Using Include for multiple layers of relationships**
+```
+_dbContext.Authors
+.Include(a => a.Books)
+.ThenInclude(b => b.BookJackets)
+.ToList();
+```
+
+* Get books for each author
+* Then get the jackets for each book
+
+We can also traverse graphs in multiple directions.
+
+```
+_dbContext.Authors
+.Include(b => a.Books.BookJackets)
+.ToList();
+```
+
+* Get books for each author
+* Also get the contact info each author
+
+```
+_dbContext.Authors
+.Include(a => a.Books)
+.Include(a => a.ContactInfo)
+.ToList();
+```
+
+* Get the jackets for each author's book (but don't get the books)
+
+**IMPORTANT!!**
+Composing many Includes in one query could create performance issues. Monitor your queries!
+Include defaults to a single SQL command. Use **AsSplitQuery()** to send multiple SQL commands instead.
+
+### Query projection
+
+Define the shape of query results.
+
+**Projecting into undefined (anonymous) type**
+
+- Use LINQ's Select method
+- Use a lambda expression to specify properties to retrieve
+- Instantiate a type to capture the resulting structure
+- Anonymous types are not available outside of the method
+
+```
+var someType = _dbContext.Authors
+    .Select(properties into a new type)
+    .ToList();
+```
+
+If we're returning more than a single property, then we'll have to contain the new properties within a type: 
+
+```
+var someType = _dbContext.Authors
+    .Select(a => new { a.FirstName, a.LastName, a.Books.Count() })
+    .ToList();
+```
+
+EF Core can only track entities recognized by the DbContext:
+
+- Anonymous types **are not tracked**
+- Entities that are properties of an anonymous type **are tracked**
+
+**Lazy loading**
+On-the-fly retrieval of data related to objects in memory.
+
+
+**Explicit loading**
+Explicit request related data for objects in memory.

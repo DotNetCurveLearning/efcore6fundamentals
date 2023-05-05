@@ -5,6 +5,7 @@ using PublisherData;
 using PublisherData.Extensions;
 using PublisherDomain;
 using Serilog;
+using System.Text;
 
 namespace PublisherConsole;
 
@@ -312,5 +313,40 @@ public class EFCoreDemo : IDataDisplayer
 
         _dbContext.Books.Add(book);
         _dbContext.SaveChanges();
+    }
+
+    public void EagerLoadBooksWithAuthors()
+    {
+        var pubDateStart = new DateTime(2010, 1, 1);
+        var authors = _dbContext.Authors
+            .Include(a => a.Books.Where(b => b.PublishDate >= pubDateStart).OrderBy(b => b.Title))
+            .ToList();
+
+        authors.ForEach(author =>
+        {
+            Console.WriteLine($"{author.LastName} ({author.Books.Count})");
+            author.Books.ForEach(book => Console.WriteLine(DisplayBookData(book)));
+        });
+    }
+
+    public void Projections()
+    {
+        var unknownTypes = _dbContext.Authors
+            .Select(author => new
+            {
+                AuthorId = author.AuthorId,
+                Name = new StringBuilder().Append(author.FirstName).Append(" ").Append(author.LastName).ToString(),
+                // Books = author.Books.Count
+                Books = author.Books.Where(book => book.PublishDate.Year < 2000).Count()
+            })            
+            .ToList();
+
+        unknownTypes.ForEach(item => Console.WriteLine(item));
+        var debugView = _dbContext.ChangeTracker.DebugView.ShortView;
+    }
+
+    private static string DisplayBookData(Book book)
+    {
+        return new StringBuilder().Append("     ").Append(book.Title).ToString();
     }
 }
