@@ -59,4 +59,6 @@ var efCoreDemo = serviceProvider.GetService<EFCoreDemo>();
 //efCoreDemo.AddNewBookToExistingAuthorInMemory();
 //efCoreDemo.AddNewBookToExistingAuthorInMemoryViaBook();
 //efCoreDemo.EagerLoadBooksWithAuthors();
-efCoreDemo.Projections();
+//efCoreDemo.Projections();
+//efCoreDemo.ExplicitLoadCollections();
+efCoreDemo.LazyLoadingFromAnAuthor();

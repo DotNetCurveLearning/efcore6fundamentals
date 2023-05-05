@@ -345,6 +345,23 @@ public class EFCoreDemo : IDataDisplayer
         var debugView = _dbContext.ChangeTracker.DebugView.ShortView;
     }
 
+    public void ExplicitLoadCollections()
+    {
+        var author = _dbContext.Authors.FirstOrDefault(a => a.LastName.Equals("Howey"));
+        _dbContext.Entry(author).Collection(a => a.Books).Load();
+    }
+
+    public void LazyLoadingFromAnAuthor()
+    {
+        // requires lazy loading to be set up in the app
+        var author = _dbContext.Authors.FirstOrDefault(a => a.LastName.Equals("Howey"));
+
+        foreach (var book in author.Books)
+        {
+            Console.WriteLine(book.Title);
+        }
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();

@@ -853,6 +853,39 @@ EF Core can only track entities recognized by the DbContext:
 - Anonymous types **are not tracked**
 - Entities that are properties of an anonymous type **are tracked**
 
+### Loading related data for objects in memory
+
+There are two other ways to perform this task:
+
+**Explicit loading**
+Explicit request related data for objects in memory.
+
+```
+// With author object already in memory, load a collection
+_dbContext.Entry(author).Collection(a => a.Books).Load();
+
+// With book object already in memory, load a reference (e.g.: parent or 1:1)
+_dbContext.Entry(book).Reference(b => b.Author).Load();
+```
+
+### Lazy loading
+
+On-the-fly retrieval of data related to objects in memory.
+
+To enable lazy loading:
+
+1) Every navigation property in every entity must be virtual. Example:
+```
+public virtual List<Book> Books { get; set; }
+```
+
+2) Reference the Microsoft.EntityFramework.Proxies package in the project.
+
+3) Use the proxy logic provided by that package.
+
+```
+optionsBuilder.UseLazyLoadingProxies()
+```
 **Lazy loading**
 On-the-fly retrieval of data related to objects in memory.
 
