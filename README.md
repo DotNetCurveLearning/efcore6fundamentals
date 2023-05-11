@@ -964,3 +964,30 @@ void DeleteAuthor()
 **Database enforces cascade delete**
 
 Only author is in memory, tracked by EF Core & marked "Deleted". Database's cascade delete will take care of books when author is deleted.
+
+# CHAPTER 09 - Defining and using many-to-many relationships
+
+**New requirements**:
+To keep track of the artists who design book covers.
+Note that the artists sometimes collaborate on a cover.
+
+EF Core has three ways to implement many-to-many relationships, but the most common and natural of them is refered as **skip navigations**, and 
+that means **Direct refs from both ends**.
+
+For more complex needs we have:
+
+* **Skip with payload** : Allows database-generated data in extra columns
+* **Explicit join class** : Additional properties accessible via code (create an entity between the two ends that join them)
+
+## Planning the M2M relationship implementation
+
+* Multiple artists working on a cover
+* An artist can work on many covers
+
+**Steps**:
+
+* Create new Artist and Cover classes, update PubContext
+* Create a migration to reflect the changes needed in the database
+* Apply the migration to the database
+* Write the code to manage artists and book covers
+* Connect books to covers
