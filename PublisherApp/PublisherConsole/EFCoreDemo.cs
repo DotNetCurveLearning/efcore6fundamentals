@@ -4,7 +4,6 @@ using PublisherConsole.Interfaces;
 using PublisherData;
 using PublisherData.Extensions;
 using PublisherDomain;
-using Serilog;
 using System.Text;
 
 namespace PublisherConsole;
@@ -284,6 +283,14 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.SaveChanges();
     }
 
+    public void InsertNewAuthorWithBooks(Author author, List<Book> books)
+    {
+        author.Books.AddRange(books);
+
+        _dbContext.Authors.Add(author);
+        _dbContext.SaveChanges();
+    }
+
     public void AddNewBookToExistingAuthorInMemory()
     {
         var author = _dbContext.Authors.FirstOrDefault(a => a.LastName == "Howey");
@@ -360,6 +367,34 @@ public class EFCoreDemo : IDataDisplayer
         {
             Console.WriteLine(book.Title);
         }
+    }
+
+    public void FilterUsingRelatedData()
+    {
+        var recentAuthors = _dbContext.Authors
+            .Where(author => author.Books.Any(book => book.PublishDate.Year >= 2015))
+            .ToList();
+    }
+
+    public void ModifyingRelatedDateWhenTracked()
+    {
+        var author = _dbContext.Authors.Include(a => a.Books)
+            .FirstOrDefault(a => a.AuthorId == 5);
+
+        author.Books[0].BasePrice = (decimal)10.00;
+
+        _dbContext.ChangeTracker.DetectChanges();
+        var state = _dbContext.ChangeTracker.DebugView.ShortView;
+    }
+
+    public void CascadeDeleteInActionWhenTracked()
+    {
+        var author = _dbContext.Authors.Include(a => a.Books)
+            .FirstOrDefault(a => a.AuthorId == 1009);
+        _dbContext.Remove(author);
+
+        var state = _dbContext.ChangeTracker.DebugView.ShortView;
+        _dbContext.SaveChanges();
     }
 
     private static string DisplayBookData(Book book)

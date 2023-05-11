@@ -8,6 +8,7 @@ using PublisherConsole.Aspects;
 using PublisherConsole.Implementations;
 using PublisherConsole.Interfaces;
 using PublisherData;
+using PublisherDomain;
 
 static void ConfigureServices(IServiceCollection services)
 {
@@ -28,11 +29,11 @@ static void ConfigureServices(IServiceCollection services)
 
     // add services
     services.AddDbContext<PubContext>(options =>
-    {        
+    {
         options
         .UseSqlServer(configuration.GetRequiredSection("ConnectionStrings").GetSection("PubDatabase").Value)
-        .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name}, LogLevel.Information)
-        .EnableSensitiveDataLogging();        
+        .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
+        .EnableSensitiveDataLogging();
     },
     ServiceLifetime.Singleton);
 
@@ -43,7 +44,7 @@ static void ConfigureServices(IServiceCollection services)
 
 // create service collection
 var services = new ServiceCollection();
-ConfigureServices(services);  
+ConfigureServices(services);
 
 // create service provider
 using var serviceProvider = services.BuildServiceProvider();
@@ -61,4 +62,16 @@ var efCoreDemo = serviceProvider.GetService<EFCoreDemo>();
 //efCoreDemo.EagerLoadBooksWithAuthors();
 //efCoreDemo.Projections();
 //efCoreDemo.ExplicitLoadCollections();
-efCoreDemo.LazyLoadingFromAnAuthor();
+//efCoreDemo.LazyLoadingFromAnAuthor();
+//efCoreDemo.FilterUsingRelatedData();
+//efCoreDemo.ModifyingRelatedDateWhenTracked();
+
+var author = new Author { FirstName = "J.R", LastName = "Tolkien" };
+var books = new List<Book>
+        {
+            new Book { Title = "The Lord of the Rings", PublishDate = new DateTime(2019, 12, 1) },
+            new Book { Title = "The Silmarilion", PublishDate = new DateTime(2019, 4, 1) },
+        };
+
+//efCoreDemo.InsertNewAuthorWithBooks(author, books);
+efCoreDemo.CascadeDeleteInActionWhenTracked();

@@ -889,6 +889,78 @@ optionsBuilder.UseLazyLoadingProxies()
 **Lazy loading**
 On-the-fly retrieval of data related to objects in memory.
 
+```
+public void LazyLoadingFromAnAuthor()
+{
+    // requires lazy loading to be set up in the app
+    var author = _dbContext.Authors.FirstOrDefault(a => a.LastName.Equals("Howey"));
+
+    foreach (var book in author.Books)
+    {
+        Console.WriteLine(book.Title);
+    }
+}
+```
 
 **Explicit loading**
 Explicit request related data for objects in memory.
+
+```
+public void ExplicitLoadCollections()
+{
+    var author = _dbContext.Authors.FirstOrDefault(a => a.LastName.Equals("Howey"));
+    _dbContext.Entry(author).Collection(a => a.Books).Load();
+}
+```
+
+### Using related data to filter objects
+
+We can take advantage of related data for querying, even if we don't want to retrieve those related objects. For example:
+
+```
+public void FilterUsingRelatedData()
+{
+    var recentAuthors = _dbContext.Authors
+        .Where(author => author.Books.Any(book => book.PublishDate.Year >= 2015))
+        .ToList();
+}
+```
+
+Here, we don't need the books, we just want to see the newer authors. So we're able to navigate through the relationship in the Where predicate, and then do a subquery of the author's books.
+It's always good to profile the resulting queries in the database, just in case it can be written more efficiently with a procedure or a view. 
+
+### Modifying related data
+
+**EF core's default entity state of graph data**
+
+                        **Has key value**       **No key value**
+
+**Add(graph)**          Added                   Added
+**Update(graph)**       Modified                Added
+**Attach(graph)**       Unchanged               Added
+
+Objects with no key value, no matter if we use the Add method, the Update or Attach, **will always be marked Added**. But otherwise, if we use the Update method and we pass in a graph, we're telling it to update
+the graph.
+We do have other ways to start tracking objects and anything that's attached to them. For example, the DbSet Attach method.
+
+**Attach starts tracking with state set to Unchanged**.
+
+So, instead of use the DbSet Add or Update or Remove methods, we can use the **DbContext Entry** method. In EF Core, Entry will focus specially on th entry that we pass in. So for instance, we can pass the Book
+object into the Entry method and then use the Entry's State property to set the state of that entry to Modified.
+
+**DbContext,Entry give us a lot of fine-grained control over the change tracker**.
+
+### Understanding deleting within graphs
+
+```
+void DeleteAuthor()
+{
+    var author = _dbContext.Authors.Find(2);
+    _dbContext.Authors.Remove(author);
+    _dbContext.SaveChanges();
+}
+```
+
+**Database enforces cascade delete**
+
+Only author is in memory, tracked by EF Core & marked "Deleted". Database's cascade delete will take care of books when author is deleted.
