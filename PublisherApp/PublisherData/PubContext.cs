@@ -1,24 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using PublisherDomain;
 
 namespace PublisherData;
 
 public class PubContext : DbContext
 {
-    private const string CONNECTION_STRING = "PubDatabase";
-    private readonly IConfiguration _configuration;
-
+    public PubContext(DbContextOptions<PubContext> options) : base(options)
+    {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+    }
     public DbSet<Author> Authors { get; set; }
     public DbSet<Book> Books { get; set; }
+    public DbSet<Artist> Artists { get; set; }
+    public DbSet<Cover> Covers { get; set; }
 
-    public PubContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
-    {
-
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        if (modelBuilder is null)
+        {
+            throw new ArgumentNullException(nameof(modelBuilder));
+        }
+
         modelBuilder.Entity<Author>()
             .HasData(new Author { AuthorId = 1, FirstName = "Rhoda", LastName = "Lerman" });
 
@@ -49,13 +55,5 @@ public class PubContext : DbContext
 
         modelBuilder.Entity<Book>()
             .HasData(someBooks);
-
-        // example of mapping an unconventional FK 
-        // since we have the author prop in books, 
-        // we're using it in WithOne
-        //modelBuilder.Entity<Author>()
-        //    .HasMany(author => author.Books)
-        //    .WithOne(b => b.Author)
-        //    .HasForeignKey(b => b.AuthorFK);
     }
 }

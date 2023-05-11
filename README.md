@@ -991,3 +991,7 @@ For more complex needs we have:
 * Apply the migration to the database
 * Write the code to manage artists and book covers
 * Connect books to covers
+
+## Understanding and creating skip navigations
+
+We only need to add properties in those related classes that point to each other.
