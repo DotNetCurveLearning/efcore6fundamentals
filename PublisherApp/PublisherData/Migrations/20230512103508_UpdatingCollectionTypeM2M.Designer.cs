@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PublisherData;
 
@@ -11,9 +12,11 @@ using PublisherData;
 namespace PublisherData.Migrations
 {
     [DbContext(typeof(PubContext))]
-    partial class PubContextModelSnapshot : ModelSnapshot
+    [Migration("20230512103508_UpdatingCollectionTypeM2M")]
+    partial class UpdatingCollectionTypeM2M
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace PublisherData.Migrations
 
                     b.HasIndex("CoversCoverId");
 
-                    b.ToTable("ArtistCover", (string)null);
+                    b.ToTable("ArtistCover");
                 });
 
             modelBuilder.Entity("PublisherDomain.Artist", b =>

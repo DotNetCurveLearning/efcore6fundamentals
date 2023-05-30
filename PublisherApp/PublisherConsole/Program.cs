@@ -39,39 +39,17 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
                 services.AddTransient<IDataDisplayer, DataDisplayer>();
             });
 
-static void ConfigureServices(IServiceCollection services)
+var host = CreateHostBuilder(args).Build();
+var efCoreDemo = host.Services.GetRequiredService<EFCoreDemo>();
+
+efCoreDemo.CreateNewCoverAndArtistTogether();
+
+/*
+using (var scope = host.Services.CreateScope())
 {
-    // configure logging
-    //services.AddLogging(builder =>
-    //{
-    //    builder.AddConsole();
-    //    builder.SetMinimumLevel(LogLevel.Information);
-    //});
+    var services = scope.ServiceProvider;
 
-    services.AddOptions();
-
-    // build config
-    IConfiguration configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddEnvironmentVariables()
-        .Build();
-
-    // add services
-    services.AddDbContext<PubContext>(options =>
-    {
-        options
-        .UseSqlServer(configuration.GetRequiredSection("ConnectionStrings").GetSection("PubDatabase").Value)
-        .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
-        .EnableSensitiveDataLogging();
-    },
-    ServiceLifetime.Singleton);
-
-    services.AddTransient<EFCoreDemo>();
-    services.AddTransient<CustomLogAttribute>();
-    services.AddTransient<IDataDisplayer, DataDisplayer>();
+    var efCoreDemo = services.GetRequiredService<EFCoreDemo>();
+    efCoreDemo.CreateNewCoverAndArtistTogether();
 }
-
-CreateHostBuilder(args).Build().Run();
-
-
+*/

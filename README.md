@@ -995,3 +995,39 @@ For more complex needs we have:
 ## Understanding and creating skip navigations
 
 We only need to add properties in those related classes that point to each other.
+
+## Joining objects in new M2M relationships
+
+This means creating varying combinations of two types of objects. For instance:
+
+**Joining Covers and Artists of differing states**
+
+* Existing Cover + Existing Artist: Existing Artist is assigned to a pre-defined book Cover
+* New Cover + Existing Artist: New Artist is hired to work on a pre-defined book Cover
+* New Cover + New Artist: New Artist is hired and declares a new book Cover
+
+With skip navigations, we have to work with the objects when we're connecting two ends.
+
+**One2M with FK property**
+```
+public class Book
+{
+    ... other properties
+    public int AuthorId { get, set; }
+}
+```
+
+**M2M with Skip navigations**
+```
+public class Artist
+{
+    ... other properties
+    public List<Cover> Covers { get, set; }
+}
+
+public class Cover
+{
+    ... other properties
+    public List<Artist> Artists { get, set; }
+}
+```

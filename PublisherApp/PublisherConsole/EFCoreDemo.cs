@@ -309,13 +309,13 @@ public class EFCoreDemo : IDataDisplayer
 
     public void AddNewBookToExistingAuthorInMemoryViaBook()
     {
-        var book = new Book 
-        { 
-            Title = "Shift", 
+        var book = new Book
+        {
+            Title = "Shift",
             PublishDate = new DateTime(2012, 1, 1),
             AuthorId = 5,
         };
-        
+
         //book.Author = _dbContext.Authors.Find(5);
 
         _dbContext.Books.Add(book);
@@ -345,7 +345,7 @@ public class EFCoreDemo : IDataDisplayer
                 Name = new StringBuilder().Append(author.FirstName).Append(" ").Append(author.LastName).ToString(),
                 // Books = author.Books.Count
                 Books = author.Books.Where(book => book.PublishDate.Year < 2000).Count()
-            })            
+            })
             .ToList();
 
         unknownTypes.ForEach(item => Console.WriteLine(item));
@@ -394,6 +394,53 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.Remove(author);
 
         var state = _dbContext.ChangeTracker.DebugView.ShortView;
+        _dbContext.SaveChanges();
+    }
+
+    public void ConnectExistingArtistAndCoverObjects()
+    {
+        var artistA = _dbContext.Artists.Find(1);
+        var artistB = _dbContext.Artists.Find(2);
+
+        var coverA = _dbContext.Covers?.Find(1);
+        coverA?.Artists.Add(artistA);
+        coverA?.Artists.Add(artistB);
+
+        _dbContext.SaveChanges();
+    }
+
+    public void CreateNewCoverWithExistingArtist()
+    {
+        var artistA = _dbContext.Artists.Find(1);
+        var cover = new Cover
+        {
+            DesignIdeas = "Author has provided a photo",
+            DigitalOnly = true
+        };
+
+        cover.Artists.Add(artistA);
+        _dbContext.Covers.Add(cover);
+
+        _dbContext.SaveChanges();
+    }
+
+    public void CreateNewCoverAndArtistTogether()
+    {
+        var newArtist = new Artist 
+        {
+            FirstName = "Kir",
+            LastName = "Talmage"
+        };
+
+        var newCover = new Cover
+        {
+            DesignIdeas = "We like birds!",
+            DigitalOnly = false
+        };
+
+        newArtist.Covers.Add(newCover);
+        _dbContext.Artists.Add(newArtist);
+
         _dbContext.SaveChanges();
     }
 

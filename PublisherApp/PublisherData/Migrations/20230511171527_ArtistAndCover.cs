@@ -43,11 +43,11 @@ namespace PublisherData.Migrations
                 columns: table => new
                 {
                     ArtistsArtistId = table.Column<int>(type: "int", nullable: false),
-                    CoversCoverID = table.Column<int>(type: "int", nullable: false)
+                    CoversCoverId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtistCover", x => new { x.ArtistsArtistId, x.CoversCoverID });
+                    table.PrimaryKey("PK_ArtistCover", x => new { x.ArtistsArtistId, x.CoversCoverId });
                     table.ForeignKey(
                         name: "FK_ArtistCover_Artists_ArtistsArtistId",
                         column: x => x.ArtistsArtistId,
@@ -56,16 +56,16 @@ namespace PublisherData.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ArtistCover_Covers_CoversCoverID",
-                        column: x => x.CoversCoverID,
+                        column: x => x.CoversCoverId,
                         principalTable: "Covers",
                         principalColumn: "CoverID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtistCover_CoversCoverID",
+                name: "IX_ArtistCover_CoversCoverId",
                 table: "ArtistCover",
-                column: "CoversCoverID");
+                column: "CoversCoverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ArtistCover_ArtistsArtistId",

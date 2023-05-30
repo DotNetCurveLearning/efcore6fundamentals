@@ -42,18 +42,41 @@ public class PubContext : DbContext
 
         var someBooks = new Book[]
         {
-            new Book { 
-                BookId = 1, AuthorId = 1, Title = "In God's Ear", PublishDate = new DateTime(1989, 3, 1) 
+            new Book {
+                BookId = 1, AuthorId = 1, Title = "In God's Ear", PublishDate = new DateTime(1989, 3, 1)
             },
-            new Book { 
-                BookId = 2, AuthorId = 2, Title = "A tale for the time being", PublishDate = new DateTime(2013, 12, 31) 
+            new Book {
+                BookId = 2, AuthorId = 2, Title = "A tale for the time being", PublishDate = new DateTime(2013, 12, 31)
             },
-            new Book { 
-                BookId = 3, AuthorId = 3, Title = "The left hand of darkness", PublishDate = new DateTime(1969, 3, 1) 
+            new Book {
+                BookId = 3, AuthorId = 3, Title = "The left hand of darkness", PublishDate = new DateTime(1969, 3, 1)
             }
         };
 
         modelBuilder.Entity<Book>()
             .HasData(someBooks);
+
+        modelBuilder.Entity<Artist>()
+        .HasMany(a => a.Covers)
+        .WithMany(c => c.Artists)
+        .UsingEntity(j => j.ToTable("ArtistCover"));
+
+        var someArtists = new Artist[]
+        {
+            new Artist { ArtistId = 1, FirstName = "Pablo", LastName = "Picasso"},
+            new Artist { ArtistId = 2, FirstName = "Dee", LastName = "Bell"},
+            new Artist { ArtistId = 3, FirstName = "Katharine", LastName = "Kuharic"},
+        };
+        modelBuilder.Entity<Artist>()
+            .HasData(someArtists);
+
+        var someCovers = new Cover[]
+        {
+            new Cover { CoverId = 1, DesignIdeas = "How about a left hand in the dark?", DigitalOnly = false },
+            new Cover { CoverId = 2, DesignIdeas = "Should we put a clock?", DigitalOnly = true },
+            new Cover { CoverId = 3, DesignIdeas = "A big ear in the clouds?", DigitalOnly = false },
+        };
+        modelBuilder.Entity<Cover>()
+            .HasData(someCovers);
     }
 }
