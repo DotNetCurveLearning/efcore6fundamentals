@@ -5,11 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PublisherConsole;
-using PublisherConsole.Aspects;
 using PublisherConsole.Implementations;
 using PublisherConsole.Interfaces;
 using PublisherData;
-using PublisherDomain;
 
 static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
@@ -35,21 +33,11 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
                 ServiceLifetime.Singleton);
 
                 services.AddTransient<EFCoreDemo>();
-                services.AddTransient<CustomLogAttribute>();
                 services.AddTransient<IDataDisplayer, DataDisplayer>();
             });
 
 var host = CreateHostBuilder(args).Build();
 var efCoreDemo = host.Services.GetRequiredService<EFCoreDemo>();
 
-efCoreDemo.CreateNewCoverAndArtistTogether();
+efCoreDemo.RetrieveAllArtistsWhoHaveCovers();
 
-/*
-using (var scope = host.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var efCoreDemo = services.GetRequiredService<EFCoreDemo>();
-    efCoreDemo.CreateNewCoverAndArtistTogether();
-}
-*/

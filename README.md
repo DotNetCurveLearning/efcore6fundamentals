@@ -1031,3 +1031,17 @@ public class Cover
     public List<Artist> Artists { get, set; }
 }
 ```
+
+## Querying across M2M relationships
+
+**Eager loading**
+Include relared objects in the query
+
+**Query projections**
+Define the shape of query results
+
+**Explicit loading**
+Explicitly request related data for objects in memory
+
+**Lazy loading**
+On-the-fly retrieval of data related to objects in memory

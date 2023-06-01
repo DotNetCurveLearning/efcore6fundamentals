@@ -1,4 +1,6 @@
-﻿namespace PublisherDomain;
+﻿using System.Text;
+
+namespace PublisherDomain;
 
 public class Artist
 {
@@ -8,4 +10,13 @@ public class Artist
     public ICollection<Cover> Covers { get; set; }
 
     public Artist() => Covers = new List<Cover>();
+
+    public override string ToString()
+    {
+        return new StringBuilder()
+            .Append(LastName)
+            .Append(" ")
+            .Append(FirstName)
+            .ToString();
+    }
 }

@@ -8,7 +8,6 @@ using System.Text;
 
 namespace PublisherConsole;
 
-[CustomLog]
 public class EFCoreDemo : IDataDisplayer
 {
     private readonly PubContext _dbContext;
@@ -442,6 +441,46 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.Artists.Add(newArtist);
 
         _dbContext.SaveChanges();
+    }
+
+    public void RetrieveAnArtistWithTheirCovers()
+    {
+        var artistWithCovers = _dbContext.Artists
+            .Include(a => a.Covers)
+            .FirstOrDefault(a => a.ArtistId == 1);
+
+        Console.WriteLine(artistWithCovers);
+        artistWithCovers?.Covers.ToList().ForEach(cover => Console.WriteLine(cover.DesignIdeas));
+    }
+
+    public void RetrieveACoverWithItsArtists()
+    {
+        var coverWithArtists = _dbContext.Covers
+            .Include(c => c.Artists)
+            .FirstOrDefault(c => c.CoverId == 1);
+
+        Console.WriteLine(coverWithArtists);
+        coverWithArtists?.Artists.ToList().ForEach(artist => Console.WriteLine(artist));
+    }
+
+    public void RetrieveAllArtistsWtihTheirCovers()
+    {
+        var allArtistsWithTheirCovers = _dbContext.Artists
+            .Include(a => a.Covers)
+            .ToList();
+
+        allArtistsWithTheirCovers.ForEach(a => a.Covers
+        .ToList()
+        .ForEach(c => Console.WriteLine(c.DesignIdeas)));
+    }
+
+    public void RetrieveAllArtistsWhoHaveCovers()
+    {
+        var allArtistsWithTheirCovers = _dbContext.Artists
+            .Where(a => a.Covers.Any())
+            .ToList();
+
+        allArtistsWithTheirCovers.ForEach(a => Console.WriteLine(a));
     }
 
     private static string DisplayBookData(Book book)
