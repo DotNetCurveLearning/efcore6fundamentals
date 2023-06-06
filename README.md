@@ -1045,3 +1045,7 @@ Explicitly request related data for objects in memory
 
 **Lazy loading**
 On-the-fly retrieval of data related to objects in memory
+
+## Understanding and benefiting from circular references in graphs
+
+This happens with all relationships, not just M2M.

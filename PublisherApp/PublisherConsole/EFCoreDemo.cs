@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PublisherConsole.Aspects;
 using PublisherConsole.Interfaces;
 using PublisherData;
 using PublisherData.Extensions;
@@ -425,7 +424,7 @@ public class EFCoreDemo : IDataDisplayer
 
     public void CreateNewCoverAndArtistTogether()
     {
-        var newArtist = new Artist 
+        var newArtist = new Artist
         {
             FirstName = "Kir",
             LastName = "Talmage"
@@ -469,9 +468,36 @@ public class EFCoreDemo : IDataDisplayer
             .Include(a => a.Covers)
             .ToList();
 
-        allArtistsWithTheirCovers.ForEach(a => a.Covers
-        .ToList()
-        .ForEach(c => Console.WriteLine(c.DesignIdeas)));
+        foreach (var a in allArtistsWithTheirCovers)
+        {
+            Console.WriteLine($"{a.FirstName} {a.LastName}, Designs to work on:");
+            var primaryArtistId = a.ArtistId;
+
+            if (a.Covers?.Count() == 0)
+            {
+                Console.WriteLine("     No covers");
+            }
+            else
+            {
+                foreach (var c in a.Covers)
+                {
+                    var co = new StringBuilder().Append(String.Empty);
+
+                    foreach (var ca in c.Artists.Where(ca => ca.ArtistId != primaryArtistId))
+                    {
+                        co.Append(ca.FirstName).Append(" ").Append(ca.LastName);
+                    }
+
+                    if (co.Length > 0)
+                    {
+                        co.Insert(0, "(with ").Append(")");
+                    }
+
+                    Console.WriteLine($"    *{c.DesignIdeas} {co}");
+                    co.Clear();
+                }
+            }
+        }
     }
 
     public void RetrieveAllArtistsWhoHaveCovers()
