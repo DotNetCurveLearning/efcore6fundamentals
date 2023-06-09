@@ -6,6 +6,7 @@ public class Cover
     public string? DesignIdeas { get; set; }
     public bool? DigitalOnly { get; set; }
     public ICollection<Artist> Artists { get; set; }
-
     public Cover() => Artists = new List<Artist>();
+    public Book Book { get; set; }
+    public int BookId { get; set; }
 }

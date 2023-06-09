@@ -1108,3 +1108,45 @@ In One2M, EF core knows the dependent can have only one principal. In M2M, an ob
 * **Skips with payoload**: Allows database-generated data in extra columns
 * **Explicit join class**: Additional properties accessible via code
 
+# CHAPTER 10 - Defining and using One2One relationships
+
+**DbContext must be able to identify a principal ("parent") and a dependent ("child")**.
+
+### Common ways EF Core identifies One2One
+
+**1) Navigations on both ends with FK independent** => EF core will recognize One2One and identify the dependent.
+a) Navigation properties on both ends and a foreign key property in the dependent. 
+
+**2) Navigation on on end. FK on the other
+Same as 1a.
+
+**3) Navigation on both ends**
+a) EF Core requires a mapping to define principal/dependent
+
+For instance: tying Book and cover together:
+
+Book => It will have a cover property.
+Cover => It will have a Book and BookId properties.
+
+**DEFINING ONE2ONE WITH EXISTING DATA CAN CAUSE CONFLICTS WITH DB CONSTRAINTS!!**
+
+**Dependents are optional by default**
+
+**By default, the cover is   optional
+- The database constraint will allow books to be inserted without a cover.
+- The business logic allows a book's cover to be created at a later date.
+
+**Configure it to be required**
+- Map the cover property as IsRequired.
+- This causes the database constraint to require a cover.
+- EF Core will not enforce the rule; the database will throw an error.
+- This is a business rule to be applied in your business logic.
+
+**Prioncipals are required by default**
+
+**Order of operations for the migration**
+
+1) Adds new BookId column
+2) Updates the BookId column values
+3) Applies Index
+4) Adds foreign key constraint
