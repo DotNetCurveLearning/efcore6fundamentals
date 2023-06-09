@@ -1091,3 +1091,15 @@ If the join is being tracked, EF core will cascade delete the join.
 If the relationship is not being tracked, database cascade delete will remove the join.
 
 **DELETING A M2M RELATONSHIPS IS EASIER WITH STORED PROCEDURES!!**
+
+## Changing joins in M2M relationships
+
+For example: reassigning a cover to a different artist.
+
+In One2M, EF core knows the dependent can have only one principal. In M2M, an object can be joined to unlimited partner ends.
+
+### Preferred workflow to changing a join
+
+* Remove the original join
+* Then create the new join between the two ends
+

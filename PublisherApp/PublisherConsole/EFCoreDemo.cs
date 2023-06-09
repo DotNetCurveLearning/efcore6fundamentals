@@ -526,6 +526,23 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.SaveChanges();
     }
 
+    public void ReassingACover()
+    {
+        var coverWithArtist4 = _dbContext.Covers
+            .Include(c => c.Artists.Where(a => a.ArtistId == 4))
+            .FirstOrDefault(c => c.CoverId == 5);
+
+        if (coverWithArtist4?.Artists is List<Artist> list && list.Any())
+        {
+            list.RemoveAt(0);
+        }
+
+        var artist3 = _dbContext.Artists.Find(3);
+        coverWithArtist4?.Artists.Add(artist3);
+
+        _dbContext.ChangeTracker.DetectChanges();
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();
