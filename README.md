@@ -1049,3 +1049,45 @@ On-the-fly retrieval of data related to objects in memory
 ## Understanding and benefiting from circular references in graphs
 
 This happens with all relationships, not just M2M.
+
+## Removing joins in M2M relationships
+
+Because we're using skip navigations, the join in the M2M relationship isn't direclty available to us as an object, and that means we will need both ends
+of that relationship in memory so we can remove one of the objects from the others list and let the change tracker figure out how to respond to that in
+the database.
+
+```
+public void UnAssignAnArtistFromACover()
+{
+    var coverWithArtist = _dbContext.Covers
+        .Include(c => c.Artists.Where(a => a.ArtistId == 1))
+        .FirstOrDefault(c => c.CoverId == 1);
+
+    if (coverWithArtist?.Artists is List<Artist> list && list.Any())
+    {
+        list.RemoveAt(0);
+    }
+
+    _dbContext.ChangeTracker.DetectChanges();
+
+    var debugView = _dbContext.ChangeTracker.DebugView.ShortView;
+    _dbContext.SaveChanges();
+}
+```
+
+What if we want to delete an object that is joined to another?
+
+```
+void DeleteAnObjectThatIsInARelationship()
+{
+    var cover = _dbContext.Covers.Find(4);
+    _dbContext.Covers.Remove(cover);
+    _dbContext.SaveChanges();
+}
+```
+
+SOLUTION: **Cascade delete to the rescue!!**
+If the join is being tracked, EF core will cascade delete the join.
+If the relationship is not being tracked, database cascade delete will remove the join.
+
+**DELETING A M2M RELATONSHIPS IS EASIER WITH STORED PROCEDURES!!**

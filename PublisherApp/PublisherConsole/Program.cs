@@ -39,5 +39,5 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
 var host = CreateHostBuilder(args).Build();
 var efCoreDemo = host.Services.GetRequiredService<EFCoreDemo>();
 
-efCoreDemo.RetrieveAllArtistsWtihTheirCovers();
+efCoreDemo.UnAssignAnArtistFromACover();
 
