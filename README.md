@@ -1103,3 +1103,8 @@ In One2M, EF core knows the dependent can have only one principal. In M2M, an ob
 * Remove the original join
 * Then create the new join between the two ends
 
+## Introducing more complex M2M relationships
+
+* **Skips with payoload**: Allows database-generated data in extra columns
+* **Explicit join class**: Additional properties accessible via code
+
