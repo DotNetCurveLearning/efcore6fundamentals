@@ -543,6 +543,51 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.ChangeTracker.DetectChanges();
     }
 
+    public void GetAllBooksWithTheirCovers()
+    {
+        var booksAndCovers = _dbContext.Books
+            .Include(book => book.Cover)
+            .ToList();
+        
+        booksAndCovers.ForEach(book =>
+            Console.WriteLine(book.Title + (book.Cover == null ? ": No cover yet" : ": " + book.Cover.DesignIdeas)));        
+    }
+
+    /// <summary>
+    /// Since this query is for a report and has
+    /// several includes, it will be a no tracking query
+    /// to avoid paying the price for all the change tracking.
+    /// </summary>
+    public void MultiLevelInclude()
+    {
+        var authorGraph = _dbContext.Authors.AsNoTracking()
+            .Include(author => author.Books)
+            .ThenInclude(book => book.Cover)
+            .ThenInclude(cover => cover.Artists)
+            .FirstOrDefault(author => author.AuthorId == 3);
+
+        var authorCompleteName = new StringBuilder()
+            .Append(authorGraph?.FirstName)
+            .Append(" ")
+            .Append(authorGraph?.LastName);
+
+        Console.WriteLine(authorCompleteName.ToString());
+
+        foreach (var book in authorGraph.Books)
+        {
+            Console.WriteLine("Book: " + book.Title);
+
+            if (book.Cover != null)
+            {
+                Console.WriteLine("Design ideas: " + book.Cover.DesignIdeas);
+                Console.Write("Artist(s): ");
+                book.Cover.Artists
+                    .ToList()
+                    .ForEach(artist => Console.Write(artist.LastName + " "));
+            }
+        }
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();

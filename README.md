@@ -1150,3 +1150,48 @@ Cover => It will have a Book and BookId properties.
 2) Updates the BookId column values
 3) Applies Index
 4) Adds foreign key constraint
+
+## Queryinh One2One relationships
+
+Same patterns as for M2M relationships:
+
+**Eager loading**: Include related objects in query.
+**Query projections**: Define the shape of query results.
+**Explicit loading**: Explicitly request related data for objects in memory.
+**Lazy loading**: On-the-fly retrieval of data related to objects in memory.
+
+### Some other queries that can be run:
+
+```
+// Get all books with their covers, even if there is no cover
+_dbContext.Books
+.Include(book => book.Cover)
+.ToList();
+
+// Get books that have a cover indeed
+_dbContext.Books
+.Include(book => book.Cover)
+.Where(book => book.Cover != null)
+.ToList();
+
+// Get books that does not have a cover yet
+_dbContext.Books
+.Where(book => book.Cover == null)
+.ToList();
+
+// Project an anonymous type of Title and DesignIdeas for books
+// who have a cover.
+_dbContext.Books
+.Where(book => book.Cover != null)
+.Select(book => new { b.Title, b.Cover.DesignIdeas })
+.ToList();
+```
+
+### Multi-level query
+
+Using multiple includes and **ThenInclude** to query more deeply int a graph.
+
+**Performance considerations with Include**
+
+- Composing many Includes in one query could create performance issues. Monitor your queries!!
+- Include defaults to a single SQL command. Use **AsSplitQuery** to send multiple SQL commands instead.
