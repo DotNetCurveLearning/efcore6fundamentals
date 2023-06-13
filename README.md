@@ -1195,3 +1195,10 @@ Using multiple includes and **ThenInclude** to query more deeply int a graph.
 
 - Composing many Includes in one query could create performance issues. Monitor your queries!!
 - Include defaults to a single SQL command. Use **AsSplitQuery** to send multiple SQL commands instead.
+
+# Combining objects on One2One relationships
+
+For instance:
+- Add a new book and cover together
+- Add cover to existing book that's in memory
+- Add cover to existing book that is in DB but not in memory

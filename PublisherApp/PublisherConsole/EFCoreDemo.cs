@@ -588,6 +588,62 @@ public class EFCoreDemo : IDataDisplayer
         }
     }
 
+    public void NewBookAndCover()
+    {
+        var book = new Book 
+        {
+            AuthorId = 1,
+            Title = "Call me Ishtar",
+            PublishDate = new DateTime(1973, 1, 1)
+        };
+
+        book.Cover = new Cover 
+        {
+            DesignIdeas = "Images of Ishtar?",
+            DigitalOnly = false,
+        };
+
+        _dbContext.Books.Add(book);
+        _dbContext.SaveChanges();
+    }
+
+    public void AddCoverToExistingBook()
+    {
+        var book = _dbContext.Books.Find(7);
+
+        book.Cover = new Cover
+        {
+            DesignIdeas = "A wool scouring pad",
+            DigitalOnly = false,
+        };
+
+        _dbContext.SaveChanges();
+    }
+
+    public void AddCoverToExistingBookWithTrackedCover()
+    {
+        var book = _dbContext.Books
+            .Include(book => book.Cover)
+            .FirstOrDefault(book => book.BookId == 5);
+
+        var TheNeverDesignIdeas = "A spirally spiral";
+
+        if (book.Cover != null)
+        {
+            book.Cover.DesignIdeas = TheNeverDesignIdeas;
+        }
+        else
+        {
+            book.Cover = new Cover
+            {
+                DesignIdeas = "A spirally spiral",
+                DigitalOnly = false,
+            };
+        }
+
+        _dbContext.SaveChanges();
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();
