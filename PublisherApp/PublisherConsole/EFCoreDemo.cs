@@ -654,12 +654,37 @@ public class EFCoreDemo : IDataDisplayer
         authors.ForEach(DisplayData);
     }
 
-    public void SimpleSqlInterpolated()
+    public void ConcatenatedRawSql_Unsafe()
     {
         var lastNameStart = "L";
-
         var authors = _dbContext.Authors
-            .FromSqlInterpolated($"select * from authors where lastname like '{lastNameStart}%'")
+            .FromSqlRaw("SELECT * FROM authors WHERE lastname LIKE '" + lastNameStart + "%'")
+            .OrderBy(a => a.LastName)
+            .TagWith("Concatenated_Unsafe")
+            .ToList();
+
+        authors.ForEach(DisplayData);
+    }
+
+    public void StringFromInterpolated_Unsafe()
+    {
+        var lastNameStart = "L";
+        var authors = _dbContext.Authors
+            .FromSqlRaw($"SELECT * FROM authors WHERE lastname LIKE '{lastNameStart}%'")
+            .OrderBy(a => a.LastName)
+            .TagWith("Interpolated_Unsafe")
+            .ToList();
+
+        authors.ForEach(DisplayData);
+    }
+
+    public void StringFromInterpolated_Safe()
+    {
+        var lastNameStart = "L";
+        var authors = _dbContext.Authors
+            .FromSqlInterpolated($"SELECT * FROM authors WHERE lastname LIKE '{lastNameStart}%'")
+            .OrderBy(a => a.LastName)
+            .TagWith("Interpolated_Safe")
             .ToList();
 
         authors.ForEach(DisplayData);

@@ -1272,3 +1272,10 @@ With it, is important to use parameters to avoid SQL injection.
 ```
 _context.Authors.FromSqlInterpolated($"some sql string {var}").ToList();
 ```
+
+## Keeping the database safe with parameterized raw SQL queries
+
+**NEVER USE SQL WITH PARAMETERS EMBEDDED DIRECTLY INTO THE STRING!!**
+
+* FromSqlInterpolated expects one formatted string as its parameter
+* FromSqlInterpolated will not accept a string
