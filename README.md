@@ -1151,7 +1151,7 @@ Cover => It will have a Book and BookId properties.
 3) Applies Index
 4) Adds foreign key constraint
 
-## Queryinh One2One relationships
+## Querying One2One relationships
 
 Same patterns as for M2M relationships:
 
@@ -1196,9 +1196,53 @@ Using multiple includes and **ThenInclude** to query more deeply int a graph.
 - Composing many Includes in one query could create performance issues. Monitor your queries!!
 - Include defaults to a single SQL command. Use **AsSplitQuery** to send multiple SQL commands instead.
 
-# Combining objects on One2One relationships
+## Combining objects on One2One relationships
 
 For instance:
 - Add a new book and cover together
 - Add cover to existing book that's in memory
 - Add cover to existing book that is in DB but not in memory
+
+## Replacing or removing One2One relationships
+
+Use case for this project: Reassigning a Cover to a different Book
+
+* Cover originally assigned to a blue book and reassigning it to a green book
+
+We have several options:
+
+1. We can change the cover's BookId:
+```
+greenCover.BookId = 3
+```
+
+2. If we have the new book in memory, change the navigation property in the dependent object
+```
+greenCover.Book = greenBookObject
+```
+
+3. Change the navigation property of the principal, if we have both books in memory along with the cover.
+```
+greenCover = blueBook.Cover;
+greenBook.Cover = greenCover;
+```
+
+If we want to just remove the relationship between a book and an cover, the simplest path is just to delete the cover:
+```
+_dbContest.Covers.Remove(greenCover); // This will delete the dependent!
+```
+EF core sends a DELETE to the database for that cover row.
+
+Another simple way is if you have a graph of the book and the cover, and we set the Cover property to null: 
+```
+bookWithCoverGraph.Cover = null;
+```
+* ChangeTracker is aware of book and cover.
+* EF Core sends a DELETE to the database for that cover row.
+
+**Some factors that affect relationship behavior**
+
+* Is the dependent required?
+* Is the child object in memory?
+* Are parent or child object being tracked?
+* Test the behaviors to learn cause and effect!
