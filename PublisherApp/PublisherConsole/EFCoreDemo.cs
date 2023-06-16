@@ -644,6 +644,27 @@ public class EFCoreDemo : IDataDisplayer
         _dbContext.SaveChanges();
     }
 
+    public void SimpleRawSQL()
+    {
+        var authors = _dbContext.Authors
+            .FromSqlRaw("select * from authors")
+            .Include(author => author.Books)
+            .ToList();
+
+        authors.ForEach(DisplayData);
+    }
+
+    public void SimpleSqlInterpolated()
+    {
+        var lastNameStart = "L";
+
+        var authors = _dbContext.Authors
+            .FromSqlInterpolated($"select * from authors where lastname like '{lastNameStart}%'")
+            .ToList();
+
+        authors.ForEach(DisplayData);
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();

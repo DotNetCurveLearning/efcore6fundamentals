@@ -1246,3 +1246,29 @@ bookWithCoverGraph.Cover = null;
 * Is the child object in memory?
 * Are parent or child object being tracked?
 * Test the behaviors to learn cause and effect!
+
+# CHAPTER 11 - Working with views and stored procedures and raw SQL
+
+EF Core allow us to work dectly with:
+* Raw SQL
+* Stored procedures
+* Views
+* Scalar functions
+* MAp to table value functions
+* Map to queries in DbContext
+
+## Querying with raw SQL
+
+Used in case we don't want to rely on EF Core to generate the queries for us. There are two methods tat let us to execute raw SQL against our defined DbSets:
+
+**DbSet.FromSqlRaw()**
+```
+_context.Authors.FromSqlRaw("some sql string").ToList();
+```
+
+With it, is important to use parameters to avoid SQL injection.
+
+**DbSet.FromSqlInterpolated()**
+```
+_context.Authors.FromSqlInterpolated($"some sql string {var}").ToList();
+```
