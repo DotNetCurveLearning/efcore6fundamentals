@@ -1351,3 +1351,41 @@ Now, we can go ahead and update the database with this new migration:
 ```
 update-database
 ```
+
+## Running stored procedure queries with raw SQL
+
+**Querying via DbSets using stored procedures** (using FromSqlRaw with formatted string)
+```
+DbSet.FromRawSql("Exec MyStoredProc, {0}, {1}", firstValue, secondValue)
+```
+
+or using **FromSqlInterpolated with interpolated string**:
+```
+DbSet.FromSql($"Exec MyStoredProc {firstValue}, {secondValue}")
+```
+
+### Examples of composing on raw SQL with Sprocs
+
+**Other methods like OrderBy or even AsNoTracking**
+```
+_dbContext.Authors
+.FromSqlRaw("AuthorsSproc, {0}, {1}", 2010, 2015)
+.OrderBy(a => a.LastName)
+.ToList();
+```
+
+**Different LINQ execution methods**
+```
+_dbContext.Authors
+.FromSqlRaw("AuthorsSproc, {0}, {1}", 2010, 2015)
+.Include(a => a.Books)
+.FirstOrDefault();
+```
+
+**Eager load with Include**
+```
+_dbContext.Authors
+.FromSqlRaw("AuthorsSproc, {0}, {1}", 2010, 2015)
+.Include(a => a.Books)
+.ToList();
+```

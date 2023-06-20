@@ -690,6 +690,23 @@ public class EFCoreDemo : IDataDisplayer
         authors.ForEach(DisplayData);
     }
 
+    public void RawSqlStoredProc()
+    {
+        var authors = _dbContext.Authors
+            .FromSqlRaw("AuthorsPublishedInYearRange {0}, {1}", 2010, 2015)
+            .ToList();
+    }
+
+    public void InterpolatedSqlStoredProc()
+    {
+        int start = 2010;
+        int end = 2015;
+
+        var authors = _dbContext.Authors
+            .FromSqlInterpolated($"AuthorsPublishedInYearRange {start}, {end}")
+            .ToList();
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();
