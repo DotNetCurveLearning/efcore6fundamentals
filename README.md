@@ -1279,3 +1279,75 @@ _context.Authors.FromSqlInterpolated($"some sql string {var}").ToList();
 
 * FromSqlInterpolated expects one formatted string as its parameter
 * FromSqlInterpolated will not accept a string
+
+## Adding stored procedures and other database objects using migrations
+
+EF core's raw SQL methods support calling stored procedures and return entities. As we need a stored procedure in the dtabase, we will use EF Core migrations to do the job.
+It's better to keep raw SQL out of the code, and instead, store it in the database in the forms of stored procedures, views and other database objects.
+
+**Example of stored procedure for this project**:
+
+Retrieve authors who published a book in a range of years.
+```
+EXEC thesproc startyear, endyear
+```
+
+### Workflow for adding db objects with migrations
+
+1. Work out the query directly against the database
+2. Build the command to create the procedure
+```
+CREATE PROCEDURE dbo.AuthorsPublishedInYearRange
+	@yearstart int,
+	@yearend int
+AS
+SELECT DISTINCT Authors.* FROM authors
+LEFT JOIN Books ON Authors.AuthorId=books.authorId
+WHERE Year(books.PublishDate)>=@yearstart AND Year(books.PublishDate)<=@yearend
+```
+
+3. Test the command by creating & running the stored procedure
+4. Remove the procedure from the database
+
+But to create the stored procedure, we will use the migration workflow, because doing it like this, it will be part of the shared source code.
+
+* Other tram members can easily migrate their own development databases.
+* The migration becomes part of our source code.
+* Useful in other environments such as CI/CD, acceptance testing and possibly production.
+
+5. Add the create procedure command to a new migration
+```
+add-migration addstoredproc
+```
+
+This will create a new migration file with an empty Up and an empty Down methods (they're empty because it didnt't discover any changes in the data model).
+The migrations API has a method called **Sql** that let us pass in raw SQL for it to run against the database. We will paste the code used to create the stored procedure manually, within the **Up** method:
+```
+protected override void Up(MigrationBuilder migrationBuilder)
+{
+    migrationBuilder.Sql(
+        @"CREATE PROCEDURE dbo.AuthorsPublishedInYearRange
+        @yearstart int,@yearend int
+        AS
+        SELECT DISTINCT Authors.*
+        FROM authors
+        LEFT JOIN Books ON Authors.AuthorId=books.authorId
+        WHERE Year(books.PublishDate)>=@yearstart AND Year(books.PublishDate)<=@yearend
+        ");
+}
+```
+
+**One of the string literal (@) benefits is allowing multi-line strings**
+
+The **Down** method is used if we need to revert the migration:
+```
+protected override void Down(MigrationBuilder migrationBuilder)
+{
+    migrationBuilder.Sql(@"DROP PROCEDURE dbo.AuthorsPublishedInYearRange");
+}
+```
+
+Now, we can go ahead and update the database with this new migration:
+```
+update-database
+```
