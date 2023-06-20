@@ -707,6 +707,11 @@ public class EFCoreDemo : IDataDisplayer
             .ToList();
     }
 
+    public void GetAuthorsByArtist()
+    {
+        var authorArtists = _dbContext.AuthorsByArtist.ToList();    
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();

@@ -1389,3 +1389,44 @@ _dbContext.Authors
 .Include(a => a.Books)
 .ToList();
 ```
+
+## Using keyless entities to map to Views
+
+Historically, EF and EF Core only understood entites with keys, because tracker relies on those key properties, but noe EF Core can comprehend keless entities.
+
+**Keyless entities != Non-tracking queries**
+
+Non-tracking query
+
+* Entity has a key prop
+* No-tracking is optional
+* Maps to tables with PK
+
+Mixed use
+
+* Entity has a key prop
+* MAps to vew and table
+* Query from the view, update to the table
+
+**KEYLESS ENTITIES ARE ALWAYS READ-ONLY AND WILL NEVER BE TRACKED. FULL STOP.**
+
+```
+...
+
+public DbSet<AuthorByArtist> AuthorsByArtist { get; set; }
+
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    if (modelBuilder is null)
+    {
+        throw new ArgumentNullException(nameof(modelBuilder));
+    }
+
+    modelBuilder.Entity<AuthorByArtist>()
+        .HasNoKey()
+        .ToView(nameof(AuthorByArtist));
+
+...
+```
+
+Migrations will not attempt to create a database view that's mapped in a DbContext.

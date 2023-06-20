@@ -16,7 +16,7 @@ public class PubContext : DbContext
     public DbSet<Book> Books { get; set; }
     public DbSet<Artist> Artists { get; set; }
     public DbSet<Cover> Covers { get; set; }
-
+    public DbSet<AuthorByArtist> AuthorsByArtist { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +24,10 @@ public class PubContext : DbContext
         {
             throw new ArgumentNullException(nameof(modelBuilder));
         }
+
+        modelBuilder.Entity<AuthorByArtist>()
+            .HasNoKey()
+            .ToView(nameof(AuthorByArtist));
 
         modelBuilder.Entity<Author>()
             .HasData(new Author { AuthorId = 1, FirstName = "Rhoda", LastName = "Lerman" });
