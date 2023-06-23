@@ -1482,3 +1482,37 @@ public void DeleteCover(int coverId)
     Console.WriteLine(rowCount);
 }
 ```
+
+# CHAPTER 12 - Using EF Core with ASP .NET Core Apps
+
+## Reviewing EF Core's lifecycle in disconnected apps
+
+The lifecycle of a DbContext is different in web applications because of their disconnected nature.
+
+**Working in a single DbContext instance**
+
+Retrieve data                   Modify objects      Save changes
+     |                                |
+Context starts tracking                             Context updates state
+state of each returned object                       of tracked objects
+                                                    before determining SQL
+
+**Various was to inform Context of state**
+
+* DbSet methods (Add, Update, Remove)
+
+* Set DbEntry.State => EntityState.Deleted/Detached/Modified/...
+    - Setting the entry state explicitly through the context.
+
+* Retrieve and modify from database.
+    - Pulling down the current values from the database and applying the incoming values to those objects directly.
+    ```
+    public void UpdateDbAuthorValues(Author aFromRequest)
+    {
+        var a = _dbContext.Authors
+                .Find(aFromRequest.AuthorId);
+        // set values with aFromRequestValues
+    }
+    ```
+
+**IN DISCONNECTED SCENARIOS, IT'S UP TO YO TO INFORM THE CONTEXT ABOUT OBJECT STATE**.
