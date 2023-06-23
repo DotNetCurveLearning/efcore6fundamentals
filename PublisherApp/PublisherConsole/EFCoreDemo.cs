@@ -725,6 +725,12 @@ public class EFCoreDemo : IDataDisplayer
         var debugView = _dbContext.ChangeTracker.DebugView.ShortView;
     }
 
+    public void DeleteCover(int coverId)
+    {
+        var rowCount = _dbContext.Database.ExecuteSqlRaw("DeleteCover {0}", coverId);
+        Console.WriteLine(rowCount);
+    }
+
     private static string DisplayBookData(Book book)
     {
         return new StringBuilder().Append("     ").Append(book.Title).ToString();

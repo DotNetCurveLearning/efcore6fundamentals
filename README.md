@@ -1434,3 +1434,51 @@ Migrations will not attempt to create a database view that's mapped in a DbConte
 ## Querying the database views
 
 Not all DbSet methods work with keyless entities: Find() will compile, but it will fail at runtime!
+
+## Executing non-query raw SQL commands
+
+It's possible to send raw SQL to the database for other tasks using the **ExecuteSqlRaw** and **ExecuteSqlInterpolated** methods. These are used to execute raw SQL and stored procs.
+They are not DbSet methods.
+
+**Run raw SQL for non-query commands from the Database property**
+```
+_dbContext.Database.ExecuteSQLRaw("some SQL string");
+
+_dbContext.Database.ExecuteSQLRawAsync("some SQL string");
+
+_dbContext.Database.ExecuteSQLInterpolated($"some SQL string {variable}");
+
+_dbContext.Database.ExecuteSQLInterpolatedAsync($"some SQL string {variable}");
+```
+
+The only result returned by those commands is the number of rows affected.
+We can pass in SQL or call procedures with ExecuteSQL methods too. Here, an example of migration to create an stored procedure to delete records from the Covers table in the database:
+```
+public partial class AddDeleteSproc : Migration
+{
+    /// <inheritdoc />
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql(
+            @"CREATE PROCEDURE DeleteCover
+                @coverId int
+              AS
+              DELETE FROM covers WHERE CoverId = @coverId");
+    }
+
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("DROP PROCEDURE DeleteCover");
+    }
+}
+```
+
+Let's execute this stored procedure:
+```
+public void DeleteCover(int coverId)
+{
+    var rowCount = _dbContext.Database.ExecuteSqlRaw("DeleteCover {0}", coverId);
+    Console.WriteLine(rowCount);
+}
+```
