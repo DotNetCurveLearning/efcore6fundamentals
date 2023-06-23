@@ -709,7 +709,20 @@ public class EFCoreDemo : IDataDisplayer
 
     public void GetAuthorsByArtist()
     {
-        var authorArtists = _dbContext.AuthorsByArtist.ToList();    
+        var authorArtists = _dbContext.AuthorsByArtist
+            .TagWith("authorArtists query")           
+            .ToList();
+
+        var oneauthorartists = _dbContext.AuthorsByArtist
+            .TagWith("oneauthorartists query")
+            .FirstOrDefault();
+
+        var Kauthorartists = _dbContext.AuthorsByArtist
+            .TagWith("Kauthorartists query")
+            .Where(a => a.Artist.StartsWith("K"))
+            .ToList();
+
+        var debugView = _dbContext.ChangeTracker.DebugView.ShortView;
     }
 
     private static string DisplayBookData(Book book)

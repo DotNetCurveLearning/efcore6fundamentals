@@ -1424,9 +1424,13 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
     modelBuilder.Entity<AuthorByArtist>()
         .HasNoKey()
-        .ToView(nameof(AuthorByArtist));
+        .ToView(nameof(AuthorsByArtist));
 
 ...
 ```
 
 Migrations will not attempt to create a database view that's mapped in a DbContext.
+
+## Querying the database views
+
+Not all DbSet methods work with keyless entities: Find() will compile, but it will fail at runtime!
