@@ -1516,3 +1516,13 @@ state of each returned object                       of tracked objects
     ```
 
 **IN DISCONNECTED SCENARIOS, IT'S UP TO YO TO INFORM THE CONTEXT ABOUT OBJECT STATE**.
+
+## Adding the ASP .Net Core project
+
+We can create a number of types of applications with ASP .NET Core, and all of them rely on some type of API on the server:
+
+MVC/Razor Pages         Blazor          JavaScript SPAs (.g.: Angular/React)
+     |                    |                         |
+     |________________   API   _____________________|
+
+**In ASP .NET Core 6, Startup logic is in Program.cs**
