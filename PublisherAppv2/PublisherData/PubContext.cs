@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 using PublisherDomain;
 
 namespace PublisherData;
@@ -86,7 +84,7 @@ public class PubContext : DbContext
             .HasData(someCovers);
     }
 }
-
+/*
 internal class ApplicationDbContextFactory : IDesignTimeDbContextFactory<PubContext>
 {
     PubContext IDesignTimeDbContextFactory<PubContext>.CreateDbContext(string[] args)
@@ -104,3 +102,4 @@ internal class ApplicationDbContextFactory : IDesignTimeDbContextFactory<PubCont
         return new PubContext(builder.Options);
     }
 }
+*/

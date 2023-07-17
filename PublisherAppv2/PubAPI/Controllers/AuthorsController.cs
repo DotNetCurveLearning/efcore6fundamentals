@@ -25,7 +25,7 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return await _context.Authors.ToListAsync();
+        return await _context.Authors.Include(a => a.Books).ToListAsync();
     }
 
     // GET: api/Authors/5
@@ -37,7 +37,9 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        var author = await _context.Authors.FindAsync(id);
+        var author = await _context.Authors
+            .Include(a => a.Books)
+            .FirstOrDefaultAsync(a => a.AuthorId == id);
 
         if (author == null)
         {

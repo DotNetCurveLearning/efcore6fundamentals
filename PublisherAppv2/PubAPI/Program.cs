@@ -1,11 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// For the data fetched, it will ignore all the cyclical data and
+// just send back the core of the results.
+builder.Services.AddControllers()
+    .AddJsonOptions(opt => opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<PublisherData.PubContext>(
+    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PubConnection"))
+              .EnableSensitiveDataLogging()
+              .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
 var app = builder.Build();
 
