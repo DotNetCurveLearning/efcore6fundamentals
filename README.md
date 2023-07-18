@@ -1482,3 +1482,12 @@ public void DeleteCover(int coverId)
     Console.WriteLine(rowCount);
 }
 ```
+
+# CHAPTER 12 - Using EF Core with ASP.NET Core Apps
+
+## Refactoring what was created from Controller with EF Core Actions template
+
+Using the entity classes directly from the backend all the way to the frontend, is considered to be an anti-pattern. It's time to refactor to keep the entities out of the requests and
+responses from whatever client is communicating with the controller.
+
+To avoid this, we will use DTOs, to transfer data between processes.
