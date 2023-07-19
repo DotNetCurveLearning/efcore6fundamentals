@@ -3,34 +3,33 @@ using PublisherData;
 using PublisherDomain;
 using System.Diagnostics;
 
-namespace PubAppTest
+namespace PubAppTest;
+
+[TestClass]
+public class DatabaseTests
 {
-    [TestClass]
-    public class DatabaseTests
+    [TestMethod]
+    public void CanInsertAuthorInDatabase()
     {
-        [TestMethod]
-        public void CanInsertAuthorInDatabase()
+        var builder = new DbContextOptionsBuilder<PubContext>();
+
+        builder.UseSqlServer(
+            "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = PubTestData");
+
+        using (var context = new PubContext(builder.Options))
         {
-            var builder = new DbContextOptionsBuilder<PubContext>();
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
 
-            builder.UseSqlServer(
-                "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = PubTestData");
+            var author = new Author { FirstName = "a", LastName = "b" };
 
-            using (var context = new PubContext(builder.Options))
-            {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+            context.Authors.Add(author);
 
-                var author = new Author { FirstName = "a", LastName = "b" };
+            Debug.WriteLine($"Before save: {author.AuthorId}");
+            context.SaveChanges();
+            Debug.WriteLine($"After save: {author.AuthorId}");
 
-                context.Authors.Add(author);
-
-                Debug.WriteLine($"Before save: {author.AuthorId}");
-                context.SaveChanges();
-                Debug.WriteLine($"Before save: {author.AuthorId}");
-
-                Assert.AreNotEqual(0, author.AuthorId);
-            }
+            Assert.AreNotEqual(0, author.AuthorId);
         }
     }
 }

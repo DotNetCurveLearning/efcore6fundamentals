@@ -1503,3 +1503,40 @@ This means three things:
   This would mean writing tests that use the DbContext directly and verifying some results.
 * **Validate our business logic that uses the DbContext and database**.
 * **Validate our business logic against the DbContext**.
+
+## When your database server is a resource hog
+
+* **Use SQL Server**
+    Need to test specific behaviors of the target database
+
+* **SQLite or SQL CE**
+    Need to test generic SQL database behaviors
+
+* **EF Core's InMemory DB**
+
+In this case, the best practices to consider to use unique strings for the connection strings are these ones:
+
+**Using a GUID for the name**
+
+```
+public void Test1()
+{
+    builder.UseInMemoryDatabase(Guid.NewGuid().ToString());
+}
+```
+
+**Sharing a GUID accross multiple instances**
+
+```
+var name = Guid.NewGuid().ToString();
+
+public void Test1()
+{
+    builder.UseInMemoryDatabase(name);
+}
+
+public void Test2()
+{
+    builder.UseInMemoryDatabase(name);
+}
+```
