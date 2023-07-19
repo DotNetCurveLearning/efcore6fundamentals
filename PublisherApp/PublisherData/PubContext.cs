@@ -5,6 +5,13 @@ namespace PublisherData;
 
 public class PubContext : DbContext
 {
+    /// <summary>
+    /// Useful when the test will be added.
+    /// </summary>
+    public PubContext()
+    {
+            
+    }
     public PubContext(DbContextOptions<PubContext> options) : base(options)
     {
         if (options is null)

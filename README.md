@@ -1491,3 +1491,15 @@ Using the entity classes directly from the backend all the way to the frontend, 
 responses from whatever client is communicating with the controller.
 
 To avoid this, we will use DTOs, to transfer data between processes.
+
+# CHAPTER 13 - Testing with EF Core
+
+## Testing EF Core directly or indirectly
+
+This means three things:
+
+* **Validate our DbContext against the database**, to make sure that the way we define it works with the database as 
+  we expected.
+  This would mean writing tests that use the DbContext directly and verifying some results.
+* **Validate our business logic that uses the DbContext and database**.
+* **Validate our business logic against the DbContext**.
