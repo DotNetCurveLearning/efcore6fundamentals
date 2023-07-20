@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PublisherConsole;
+using PublisherConsole.Dtos;
 using PublisherConsole.Implementations;
 using PublisherConsole.Interfaces;
 using PublisherData;
@@ -40,10 +41,27 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
 
                 services.AddTransient<EFCoreDemo>();
                 services.AddTransient<IDataDisplayer, DataDisplayer>();
+                services.AddSingleton<DataLogic>();
             });
 
 var host = CreateHostBuilder(args).Build();
 var efCoreDemo = host.Services.GetRequiredService<EFCoreDemo>();
+// efCoreDemo.DeleteCover(8);
+var dataLogic = host.Services.GetRequiredService<DataLogic>();
 
-efCoreDemo.DeleteCover(8);
 
+AddSomeAuthors();
+
+void AddSomeAuthors()
+{
+    var authorList = new List<ImportAuthorDto>()
+            {
+                new ImportAuthorDto("Ruth", "Ozeki"),
+                new ImportAuthorDto("Sofia", "Segovia"),
+                new ImportAuthorDto("Ursula K.", "LeGuin"),
+                new ImportAuthorDto("Hugh", "Howey"),
+                new ImportAuthorDto("Isabelle", "Allende"),
+            };
+
+    var result = dataLogic.ImportAuthors(authorList);
+}

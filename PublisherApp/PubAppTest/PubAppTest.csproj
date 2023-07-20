@@ -18,6 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\PublisherConsole\PublisherConsole.csproj" />
 		<ProjectReference Include="..\PublisherData\PublisherData.csproj" />
 		<ProjectReference Include="..\PublisherDomain\PublisherDomain.csproj" />
 	</ItemGroup>

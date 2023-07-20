@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PublisherConsole;
+using PublisherConsole.Dtos;
 using PublisherData;
 using PublisherDomain;
 using System.Diagnostics;
@@ -29,6 +31,25 @@ namespace PubAppTest
 
                 Assert.AreEqual(EntityState.Unchanged, context.Entry(author).State);
             }
+        }
+
+        [TestMethod]
+        public void InsertAuthorsReturnsCorrectResultNumber()
+        {
+            var builder = new DbContextOptionsBuilder<PubContext>();
+            builder.UseInMemoryDatabase(_connectionString);
+
+            var authorList = new List<ImportAuthorDto>() 
+            {
+                new ImportAuthorDto("a", "b"),
+                new ImportAuthorDto("c", "d"),
+                new ImportAuthorDto("e", "f"),
+            };
+
+            var dl = new DataLogic(new PubContext(builder.Options));
+            var result = dl.ImportAuthors(authorList);
+
+            Assert.AreEqual(authorList.Count, result);
         }
     }
 }
