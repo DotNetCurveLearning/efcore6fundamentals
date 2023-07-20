@@ -1,4 +1,9 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PubAPI.Dtos;
+using PubAPI.Helpers;
+using PubAPI.Interfaces;
+using PublisherDomain;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +23,17 @@ builder.Services.AddDbContext<PublisherData.PubContext>(
               .EnableSensitiveDataLogging()
               .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
+//builder.Services.AddSingleton<DataLogic>();
+builder.Services.AddTransient<IMappingService, MappingService>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
+
+// Generic method to register mappings
+static void RegisterMappings<TSource, TDestination>(IMapperConfigurationExpression cfg)
+{
+    cfg.CreateMap<TSource, TDestination>(); 
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

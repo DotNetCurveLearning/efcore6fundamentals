@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PubAPI.Dtos;
+using PubAPI.Interfaces;
 using PublisherData;
 using PublisherDomain;
 
@@ -11,10 +12,14 @@ namespace PubAPI.Controllers;
 public class AuthorsController : ControllerBase
 {
     private readonly PubContext _context;
+    private readonly IMappingService _mappingService;
 
-    public AuthorsController(PubContext context)
+    public AuthorsController(
+        PubContext context,
+        IMappingService mappingService)
     {
         _context = context;
+        _mappingService = mappingService;
     }
 
     // GET: api/Authors
@@ -26,14 +31,9 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return await _context.Authors
-            .Select(a => new AuthorDto
-            {
-                AuthorId = a.AuthorId,
-                FirstName = a.FirstName,
-                LastName = a.LastName
-            })
-            .ToListAsync();
+        var result = await _context.Authors.ToListAsync();
+
+        return Ok(_mappingService.MapEntityListToDtoList<Author, AuthorDto>(result));
     }
 
     // GET: api/Authors/5
@@ -54,7 +54,7 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return AuthorToDto(author);        
+        return Ok(_mappingService.MapEntityToDto<Author, AuthorDto>(author));
     }
 
     // PUT: api/Authors/5
