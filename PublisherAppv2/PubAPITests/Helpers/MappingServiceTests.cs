@@ -19,6 +19,9 @@ public class MappingServiceTests
         var configurationProvider = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<MappingProfile>();
+
+            // Reverse mapping configuration from AuthorDto to Author
+            cfg.CreateMap<AuthorDto, Author>();
         });
 
         _mappingService = new MappingService(configurationProvider.CreateMapper());
@@ -39,14 +42,16 @@ public class MappingServiceTests
     }
 
     [TestMethod()]
-    public void MapEntityToDtoTest()
+    public void MapDtoToEntity_ShouldMapCorrectly()
     {
-        Assert.Fail();
-    }
+        // Arrange
+        var authorDto = new AuthorDto { AuthorId = 1, FirstName = "a", LastName = "b" };
 
-    [TestMethod()]
-    public void MapEntityListToDtoListTest()
-    {
-        Assert.Fail();
+        // Act
+        var authorModel = _mappingService.MapEntityToDto<AuthorDto, Author>(authorDto);
+
+        // Assert
+        Assert.AreEqual(authorModel.AuthorId, authorDto.AuthorId);
+        Assert.AreEqual(authorModel.FirstName, authorDto.FirstName);
     }
 }
