@@ -58,6 +58,7 @@ public class PubContext : DbContext
         };
 
         modelBuilder.Entity<Book>()
+            .Ignore(p => p.BasePrice)
             .HasData(someBooks);
 
         modelBuilder.Entity<Artist>()
